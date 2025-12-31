@@ -1,0 +1,43 @@
+{
+  "name": "secret-hitler",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "node": "TS_NODE_PROJECT=tsconfig.node.json nodemon --watch . --ext ts --exec node --loader ts-node/esm server.ts",
+    "nodemon": "nodemon server.ts"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "dotenv": "^17.2.2",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.540.0",
+    "next": "15.5.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-tooltip": "^5.29.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "concurrently": "^9.2.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.0",
+    "nodemon": "^3.1.10",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5"
+  }
+}

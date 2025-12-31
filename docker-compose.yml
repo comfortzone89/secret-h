@@ -1,0 +1,19 @@
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+    ports:
+      - "3000:3000"
+
+  socket:
+    build:
+      context: .
+      dockerfile: Dockerfile.socket
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
