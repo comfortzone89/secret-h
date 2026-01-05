@@ -6,13 +6,13 @@ WORKDIR /app
 # Copy root package.json & package-lock.json
 COPY package.json package-lock.json ./
 
-# Install production dependencies
-RUN npm ci --omit=dev
+# Install all dependencies (including dev for TypeScript)
+RUN npm ci
 
-# Copy server folder contents
+# Copy server folder
 COPY server/ ./server/
 
-# Build the server (run from root)
+# Build the server (runs tsc via server/package.json)
 RUN npm run server:build
 
 # ---------- Runtime ----------
@@ -24,14 +24,14 @@ ENV NODE_ENV=production
 # Copy compiled output
 COPY --from=builder /app/server/dist ./dist
 
-# Copy production node_modules
+# Copy only production node_modules
 COPY --from=builder /app/node_modules ./node_modules
 
-# Copy package.json for metadata
+# Copy root package.json (optional, for metadata)
 COPY --from=builder /app/package.json ./
 
 # Expose socket server port
 EXPOSE 3001
 
-# Run the server
+# Run the compiled server
 CMD ["node", "dist/server.js"]
