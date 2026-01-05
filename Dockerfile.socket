@@ -17,7 +17,7 @@ COPY server/ ./server/
 WORKDIR /app/server
 
 # Compile TypeScript → dist/server.js
-RUN npm run socket:build
+RUN npm run server:build
 
 # ---------- Runtime ----------
 FROM node:20-alpine AS runner
