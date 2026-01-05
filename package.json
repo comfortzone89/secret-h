@@ -13,6 +13,8 @@
     "server:start": "npm --prefix server run start"
   },
   "dependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/socket.io": "^3.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.540.0",
@@ -21,7 +23,6 @@
     "react-dom": "19.1.0",
     "react-tooltip": "^5.29.1",
     "socket.io-client": "^4.8.1",
-    "uuid": "^13.0.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

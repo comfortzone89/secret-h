@@ -4,11 +4,10 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy root package.json & package-lock.json
-# Since build context is root, these are accessible
-COPY package*.json ./
+# Copy root package.json & package-lock.json explicitly
+COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install production dependencies only
 RUN npm ci --omit=dev
 
 # Copy server folder contents into container
@@ -26,10 +25,14 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Copy compiled output and node_modules
+# Copy compiled output
 COPY --from=builder /app/server/dist ./dist
+
+# Copy production node_modules
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
+
+# Copy package.json for metadata
+COPY --from=builder /app/package.json ./
 
 # Expose socket server port
 EXPOSE 3001
