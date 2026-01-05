@@ -13,7 +13,12 @@ import type { LobbyPlayer, Player } from "./types/index.js";
 import { generateRoomId } from "./helpers/index.js";
 import { Lobby } from "./lib/Lobby.js";
 
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: path.resolve(__dirname, "../.env") });
+}
+
+const PORT = Number(process.env.SOCKET_PORT) || 3001;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 interface GameRoom {
   id: string;
@@ -28,7 +33,7 @@ const httpServer = http.createServer();
 
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_ORIGIN,
+    origin: FRONTEND_ORIGIN,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -540,6 +545,6 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-httpServer.listen(process.env.SOCKET_PORT, () =>
-  console.log(`Socket.io server running on port ${process.env.SOCKET_PORT}`)
+httpServer.listen(PORT, () =>
+  console.log(`Socket.io server running on port ${PORT}`)
 );
