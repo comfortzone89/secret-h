@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./server
-          file: ./server/Dockerfile.socket
+          file: Dockerfile.socket
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:latest
