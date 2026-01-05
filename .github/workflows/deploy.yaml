@@ -35,8 +35,8 @@ jobs:
       - name: Build & push Socket server image
         uses: docker/build-push-action@v5
         with:
-          context: ./server
-          file: ./server/Dockerfile.socket
+          context: .
+          file: server/Dockerfile.socket
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:latest
