@@ -35,7 +35,7 @@ jobs:
       - name: Build & push Socket server image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./server
           file: Dockerfile.socket
           push: true
           tags: |
