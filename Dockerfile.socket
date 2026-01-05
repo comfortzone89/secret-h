@@ -1,34 +1,34 @@
 # ---------- Build Socket server ----------
 FROM node:20-alpine AS builder
 
-WORKDIR /app
+WORKDIR /app/server
 
-# Copy root package.json & package-lock.json
-COPY package.json package-lock.json ./
+# Copy server package.json & package-lock.json (server dependencies)
+COPY server/package.json server/package-lock.json ./
 
 # Install all dependencies (including dev for TypeScript)
 RUN npm ci
 
-# Copy server folder
-COPY server/ ./server/
+# Copy server source code
+COPY server/ ./
 
-# Build the server (runs tsc via server/package.json)
-RUN npm run server:build
+# Build the server (produces dist/ inside server/)
+RUN npm run build
 
 # ---------- Runtime ----------
 FROM node:20-alpine AS runner
 
-WORKDIR /app
+WORKDIR /app/server
 ENV NODE_ENV=production
 
 # Copy compiled output
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server/dist ./dist
 
 # Copy only production node_modules
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/server/node_modules ./node_modules
 
-# Copy root package.json (optional, for metadata)
-COPY --from=builder /app/package.json ./
+# Copy package.json for metadata / Node ESM boundary
+COPY --from=builder /app/server/package.json ./
 
 # Expose socket server port
 EXPOSE 3001
