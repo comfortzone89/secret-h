@@ -4,7 +4,8 @@ import { useGameStore } from "@/store/game";
 import React from "react";
 
 const StatusBanner: React.FC = () => {
-  const { me } = useGameStore();
+  const { getMe } = useGameStore();
+  const me = getMe();
 
   const statusBanner = me?.statusBanner;
 

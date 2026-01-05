@@ -12,8 +12,8 @@ export default function Modal({
   modal: string;
   className?: string;
 }) {
-  const { gameInstance, me } = useGameStore();
-
+  const { gameInstance, getMe } = useGameStore();
+  const me = getMe();
   // 🔎 centralize modal visibility logic
   const canShowModal = (() => {
     if (!gameInstance && !me) return true;

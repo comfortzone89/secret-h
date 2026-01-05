@@ -8,8 +8,9 @@ import PlayerContainer from "../templates/PlayerContainer";
 import { INVESTIGATE_RESULT_MODAL_H } from "@/constants";
 
 const InvestigateResultModal: React.FC = () => {
-  const { gameInstance, me, handleInvestigateResultModalClose } =
+  const { gameInstance, getMe, handleInvestigateResultModalClose } =
     useGameStore();
+  const me = getMe();
 
   const investigatedPlayerIndex = gameInstance?.presidentInvestigation;
   const investigatedPlayer = gameInstance?.players[investigatedPlayerIndex!];

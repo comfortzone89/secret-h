@@ -22,6 +22,8 @@ interface GameState {
   maxPlayers: number | null;
   me: Player | null;
 
+  initializeGame: (game: Game) => void;
+
   // lobby setters
   setName: (name: string) => void;
   setSelectedPortrait: (portrait: string) => void;
@@ -40,7 +42,9 @@ interface GameState {
   setPlayers: (players: Player[]) => void;
   setGameInstance: (game: Game | null) => void;
   setMaxPlayers: (count: number) => void;
-  setMe: (me: Player) => void;
+  setMe: (player: Player) => void;
+  getMe: () => Player | null;
+  getPlayerIndex: () => number | null;
   setPlayerIndex: (playerIndex: number) => void;
 
   // game socket handlers
@@ -82,6 +86,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   maxPlayers: null,
   me: null,
 
+  initializeGame: (game: Game) =>
+    set({
+      gameInstance: game,
+    }),
+
   // lobby setters
   setName: (name) => set({ name }),
   setSelectedPortrait: (portrait) => set({ selectedPortrait: portrait }),
@@ -96,12 +105,29 @@ export const useGameStore = create<GameState>((set, get) => ({
   setPlayers: (players) => set({ players }),
   setGameInstance: (gameInstance) => set({ gameInstance }),
   setMaxPlayers: (count) => set({ maxPlayers: count }),
-  setMe: (me) => set({ me }),
+  setMe: (player) =>
+    set((state) => {
+      if (state.me?.id === player.id) return state;
+      return { me: player };
+    }),
+  getMe: () => {
+    const { gameInstance, playerId } = get();
+    if (!gameInstance || playerId === null) return null;
+    return gameInstance.players.find((p) => p.id === playerId) ?? null;
+  },
+  getPlayerIndex: () => {
+    const { gameInstance, playerId } = get();
+    if (!gameInstance || !playerId) return null;
+    return gameInstance.players.findIndex((p) => p.id === playerId) ?? null;
+  },
   setPlayerIndex: (playerIndex) => set({ playerIndex }),
 
   // game socket handlers
   handleRoleModalClose: () => {
-    const { gameInstance, playerIndex, playerId } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
+    const playerId = me?.id;
     socket.emit("handleRoleModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -118,7 +144,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleVoteModalClose: (vote) => {
-    const { gameInstance, playerIndex, playerId } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
+    const playerId = me?.id;
     socket.emit("handleVoteModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -128,7 +157,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handlePresidentHandModalClose: (discard) => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handlePresidentHandModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -137,7 +168,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleChancellorHandModalClose: (enact) => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handleChancellorHandModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -146,7 +179,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleElectionTrackerModalClose: () => {
-    const { gameInstance, playerIndex, playerId } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
+    const playerId = me?.id;
     socket.emit("handleElectionTrackerModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -155,7 +191,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handlePolicyEnactedModalClose: () => {
-    const { gameInstance, playerIndex, playerId } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
+    const playerId = me?.id;
     socket.emit("handlePolicyEnactedModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -164,7 +203,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handlePeekModalClose: () => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handlePeekModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -180,9 +221,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleInvestigateResultModalClose: () => {
-    const { gameInstance } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handleInvestigateResultModalClose", {
       roomId: gameInstance?.id,
+      playerIndex,
     });
   },
 
@@ -203,7 +247,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleExecutionResultModalClose: () => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handleExecutionResultModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -211,7 +257,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleVetoUnlockedModalClose: () => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handleVetoUnlockedModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -224,7 +272,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleProposeVetoModalClose: (oblige) => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handleProposeVetoModalClose", {
       roomId: gameInstance?.id,
       playerIndex,
@@ -233,7 +283,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleGameOverModalClose: (action) => {
-    const { gameInstance, playerId } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerId = me?.id;
     socket.emit("gameEnded", { roomId: gameInstance?.id, playerId, action });
   },
 

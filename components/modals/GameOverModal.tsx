@@ -7,7 +7,8 @@ import PlayerContainer from "../templates/PlayerContainer";
 import { GAME_OVER_MODAL_PLEFT, GAME_OVER_MODAL_WAIT } from "@/constants";
 
 const GameOverModal: React.FC = () => {
-  const { gameInstance, me, handleGameOverModalClose } = useGameStore();
+  const { gameInstance, getMe, handleGameOverModalClose } = useGameStore();
+  const me = getMe();
 
   const partyWon = gameInstance?.gameWon;
   if (partyWon === null || partyWon === undefined) return;
@@ -36,14 +37,14 @@ const GameOverModal: React.FC = () => {
           "successfully elected Hitler as Channcelor!"}
         {winReason === "hitlerExecuted" && "successfully executed Hitler!"}
       </p>
-      <div className="flex justify-center gap-4 mb-4">
+      <div className="flex justify-center gap-2 mb-4 flex-wrap">
         {fascists?.map((p, i) => (
           <div key={i} className="flex flex-col items-center relative">
             <PlayerContainer player={p} showRoles={true} />
           </div>
         ))}
       </div>
-      <div className="flex justify-center gap-4 mb-4">
+      <div className="flex justify-center gap-2 mb-4 flex-wrap">
         {liberals?.map((p, i) => (
           <div key={i} className="flex flex-col items-center relative">
             <PlayerContainer player={p} showRoles={true} />

@@ -7,9 +7,11 @@ import Button from "@/components/templates/Button";
 import { Copy } from "lucide-react";
 import PlayerContainer from "../templates/PlayerContainer";
 import { Player } from "@/types";
+import { useLobbyStore } from "@/store/lobby";
 
 export default function LobbyView() {
-  const { roomId, players, setPlayers, maxPlayers, setView } = useGameStore();
+  const { roomId, players, setPlayers, setView } = useGameStore();
+  const { maxPlayers } = useLobbyStore();
 
   // Copy join URL
   const handleCopy = () => {
@@ -75,7 +77,7 @@ export default function LobbyView() {
           Players: {players.length} / {maxPlayers}
         </p>
 
-        <ul className="flex gap-5">
+        <ul className="flex gap-2 justify-center flex-wrap">
           {players.map((p) => {
             return <PlayerContainer key={p.id} player={p} />;
           })}

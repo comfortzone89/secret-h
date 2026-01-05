@@ -1,19 +1,37 @@
+version: "3.9"
+
 services:
   nextjs:
-    build:
-      context: .
-      dockerfile: Dockerfile.next
+    image: shakenbake89/secret-h-next:latest
+    container_name: nextjs
+    restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SOCKET_URL: http://socket:3001
+    depends_on:
+      - socket
 
   socket:
-    build:
-      context: .
-      dockerfile: Dockerfile.socket
+    image: shakenbake89/secret-h-socket:latest
+    container_name: socket
+    restart: unless-stopped
     ports:
       - "3001:3001"
+    environment:
+      NODE_ENV: production
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - redis
 
   redis:
     image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

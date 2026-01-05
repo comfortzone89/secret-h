@@ -10,8 +10,8 @@ const germania = localFont({
 });
 
 export const metadata = {
-  title: "My Game",
-  description: "Multiplayer game with phases",
+  title: "Secret Hitler - Social Deduction Game",
+  description: "Multiplayer online game",
 };
 
 export default function RootLayout({
@@ -23,7 +23,9 @@ export default function RootLayout({
     <html lang="en" className={`${germania.variable}`}>
       <body className="bg-stone-700 text-white font-[family-name:var(--font-germania)]">
         <header className="p-5 bg-amber-900 text-4xl text-white font-bold text-center h-[80px] flex items-center justify-center">
-          <Link href={process.env.NEXT_PUBLIC_HOSTNAME || '#'}>Secret Hitler</Link>
+          <Link href={process.env.NEXT_PUBLIC_HOSTNAME || "#"}>
+            Secret Hitler
+          </Link>
         </header>
         <main className="h-[calc(100vh-80px)]">{children}</main>
       </body>

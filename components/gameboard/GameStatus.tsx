@@ -34,7 +34,7 @@ const GameStatus: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-1 bg-stone-900 rounded-lg p-2">
-      <span>Players:</span>
+      <span className="text-xs md:text-base">Players:</span>
       <div className="flex gap-2">
         <div className="flex items-center">
           <Image
@@ -42,6 +42,7 @@ const GameStatus: React.FC = () => {
             alt="Liberal"
             width={30}
             height={30}
+            className="w-[7vmin] md:w-[5vmin]"
           />
           <span>{roles.liberal}</span>
         </div>
@@ -51,6 +52,7 @@ const GameStatus: React.FC = () => {
             alt="Fascist"
             width={30}
             height={30}
+            className="w-[7vmin] md:w-[5vmin]"
           />
           <span>{roles.fascist}</span>
         </div>
@@ -60,11 +62,12 @@ const GameStatus: React.FC = () => {
             alt="Hitler"
             width={30}
             height={30}
+            className="w-[7vmin] md:w-[5vmin]"
           />
           <span>{roles.hitler}</span>
         </div>
       </div>
-      <span>Unenacted Policies:</span>
+      <span className="text-xs md:text-base">Unenacted Policies:</span>
       <div className="flex gap-2">
         <div className="flex items-center">
           <Image
@@ -72,6 +75,7 @@ const GameStatus: React.FC = () => {
             alt="Liberal"
             width={30}
             height={30}
+            className="w-[7vmin] md:w-[5vmin]"
           />
           <span>{6 - liberalPolicies!}</span>
         </div>
@@ -81,6 +85,7 @@ const GameStatus: React.FC = () => {
             alt="Fascist"
             width={30}
             height={30}
+            className="w-[7vmin] md:w-[5vmin]"
           />
           <span>{11 - fascistPolicies!}</span>
         </div>

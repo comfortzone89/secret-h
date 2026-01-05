@@ -16,9 +16,10 @@ import {
 } from "@/constants";
 
 const RoleModal: React.FC = () => {
-  const { gameInstance, me, handleRoleModalClose } = useGameStore();
+  const { gameInstance, getMe, handleRoleModalClose } = useGameStore();
 
   if (gameInstance === null) return;
+  const me = getMe();
 
   const role = me?.role;
   const imageName =
@@ -38,7 +39,7 @@ const RoleModal: React.FC = () => {
           alt={role!}
           width={210}
           height={77}
-          className="w-[25vmin] h-auto"
+          className="w-[30vmin] h-auto object-contain"
         />
         <div className="mb-4">
           <p className="mb-4">

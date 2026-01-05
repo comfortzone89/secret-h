@@ -13,7 +13,8 @@ const LiberalBoard: React.FC = () => {
   const cards = Array.from({ length: policies }, (_, i) => ({
     key: `liberal-${i}`,
     src: "/images/board-policy-liberal.png",
-    left: 15 + i * 10.9,
+    left: 18 + i * 13.8,
+    // left: `calc(5vmin + ${i * 10.9}vmin)`,
   }));
 
   return (
@@ -24,8 +25,8 @@ const LiberalBoard: React.FC = () => {
         alt="Election Tracker"
         width={30}
         height={30}
-        className="w-[2vmin] absolute bottom-[5.2vmin]"
-        style={{ left: `${27.6 + electionTracker * 7.4}vmin` }}
+        className="w-[3vmin] absolute bottom-[17%]"
+        style={{ left: `${34.3 + electionTracker * 9.2}%` }}
       />
 
       {/* Board */}
@@ -34,7 +35,7 @@ const LiberalBoard: React.FC = () => {
         alt="Liberal Board"
         width={500}
         height={100}
-        className="w-[80vmin]"
+        className="w-full"
       />
 
       {/* Policies */}
@@ -42,8 +43,8 @@ const LiberalBoard: React.FC = () => {
         {cards.map((card) => (
           <motion.div
             key={card.key}
-            className="absolute bottom-[50%] translate-y-1/2 w-[7vmin]"
-            style={{ left: `${card.left}vmin` }}
+            className="absolute bottom-[50%] translate-y-1/2 w-[9%] md:w-[10%]"
+            style={{ left: `${card.left}%` }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}

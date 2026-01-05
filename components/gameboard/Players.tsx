@@ -4,7 +4,8 @@ import { useGameStore } from "@/store/game";
 import { motion } from "framer-motion";
 
 const Players: React.FC = () => {
-  const { gameInstance, me } = useGameStore();
+  const { gameInstance, getMe } = useGameStore();
+  const me = getMe();
 
   const players = gameInstance?.players;
   const maxPlayers = players?.length;
@@ -26,7 +27,7 @@ const Players: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="flex justify-center gap-5 w-full bg-stone-800"
+      className="flex justify-center gap-5 w-full bg-stone-800 flex-wrap"
     >
       {players?.map((p, i) => (
         <PlayerContainer

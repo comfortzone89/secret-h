@@ -28,6 +28,15 @@ export interface StatusBanner {
   loading: boolean;
 }
 
+export interface LobbyPlayer {
+  id: string | null;
+  permaId: string; // persistent identifier across reconnects
+  name: string;
+  portrait: string; // URL or path to portrait image
+  modal?: string | null;
+  modalConfirm?: boolean;
+}
+
 export interface Player {
   id: string | null;
   permaId: string; // persistent identifier across reconnects
@@ -88,6 +97,7 @@ export interface LobbyUpdatePayload {
   players: Player[];
   maxPlayers: number;
   roomId: string;
+  order: "random" | "manual";
 }
 
 export interface GameStartPayload {

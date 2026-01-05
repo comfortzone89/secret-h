@@ -10,7 +10,9 @@ import {
 } from "@/constants";
 
 const SpecialElectionModal: React.FC = () => {
-  const { gameInstance, me, handleSpecialElectionModalClose } = useGameStore();
+  const { gameInstance, getMe, handleSpecialElectionModalClose } =
+    useGameStore();
+  const me = getMe();
 
   const players = gameInstance?.players;
 

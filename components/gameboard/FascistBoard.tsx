@@ -13,7 +13,7 @@ const FascistBoard: React.FC = () => {
   const cards = Array.from({ length: policies }, (_, i) => ({
     key: `fascist-${i}`,
     src: "/images/board-policy-fascist.png",
-    left: 9 + i * 11,
+    left: 11.5 + i * 13.5,
   }));
 
   return (
@@ -26,7 +26,7 @@ const FascistBoard: React.FC = () => {
         alt="Fascist Board"
         width={500}
         height={100}
-        className="w-[80vmin]"
+        className="w-full"
       />
 
       {/* Policies */}
@@ -34,8 +34,8 @@ const FascistBoard: React.FC = () => {
         {cards.map((card) => (
           <motion.div
             key={card.key}
-            className="absolute bottom-[50%] translate-y-1/2 w-[7vmin]"
-            style={{ left: `${card.left}vmin` }}
+            className="absolute bottom-[50%] translate-y-1/2 w-[9%] md:w-[10%]"
+            style={{ left: `${card.left}%` }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}

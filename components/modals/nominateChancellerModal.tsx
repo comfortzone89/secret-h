@@ -6,9 +6,9 @@ import { useGameStore } from "@/store/game";
 import { NOMINATE_CHANCELLOR_MODAL_H } from "@/constants";
 
 const PickChancellorModal: React.FC = () => {
-  const { gameInstance, me, handleNominateChancellorModalClose } =
+  const { gameInstance, getMe, handleNominateChancellorModalClose } =
     useGameStore();
-
+  const me = getMe();
   const players = gameInstance?.players;
 
   const [selectedChancellor, setSelectedChancellor] = useState<number | null>(

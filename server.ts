@@ -2,8 +2,9 @@ import "dotenv/config";
 import http from "http";
 import { Server, Socket } from "socket.io";
 import { Game } from "./lib/Game.ts";
-import type { Player } from "./types";
+import type { LobbyPlayer, Player } from "./types";
 import { generateRoomId } from "./helpers/index.ts";
+import { Lobby } from "./lib/Lobby.ts";
 
 interface GameRoom {
   id: string;
@@ -51,14 +52,14 @@ io.on("connection", (socket: Socket) => {
     ) => {
       const { name, maxPlayers, portrait } = data;
       const roomId = generateRoomId();
-      const player: Player = {
+      const player: LobbyPlayer = {
         id: socket.id,
         permaId: socket.id,
         name,
         portrait,
       };
 
-      const room: GameRoom = {
+      const room: Lobby = {
         id: roomId,
         hostId: socket.id,
         maxPlayers,
@@ -99,7 +100,7 @@ io.on("connection", (socket: Socket) => {
       if (room.players.length >= room.maxPlayers)
         return callback({ error: "Room full" });
 
-      const player: Player = {
+      const player: LobbyPlayer = {
         id: socket.id,
         permaId: socket.id,
         name,
@@ -297,10 +298,15 @@ io.on("connection", (socket: Socket) => {
     const room = rooms[roomId];
     if (!room || !room.game) return;
 
-    console.log("Handling role modal close for", playerId);
-
     const allConfirmed = room.game.handleRoleModalClose(playerIndex);
-    io.in(allConfirmed ? roomId : playerId).emit("game_update", room.game);
+
+    // Always update the confirming player
+    io.to(playerId).emit("game_update", room.game);
+
+    // Only update everyone else when all confirmed
+    if (allConfirmed) {
+      io.in(roomId).emit("game_update", room.game);
+    }
   });
 
   socket.on(
@@ -419,11 +425,11 @@ io.on("connection", (socket: Socket) => {
     io.in(roomId).emit("game_update", room.game);
   });
 
-  socket.on("handleInvestigateResultModalClose", ({ roomId }) => {
+  socket.on("handleInvestigateResultModalClose", ({ roomId, playerIndex }) => {
     const room = rooms[roomId];
     if (!room || !room.game) return;
 
-    room.game.handleInvestigateResultModalClose();
+    room.game.handleInvestigateResultModalClose(playerIndex);
 
     io.in(roomId).emit("game_update", room.game);
   });

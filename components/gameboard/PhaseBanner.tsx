@@ -6,8 +6,9 @@ import { socket } from "@/lib/socket";
 import { useGameStore } from "@/store/game";
 
 const PhaseBanner: React.FC = () => {
-  const { gameInstance, me, playerId, playerIndex } = useGameStore();
-
+  const { gameInstance, playerId, getMe } = useGameStore();
+  const me = getMe();
+  const playerIndex = me?.index;
   const currentPhase = me?.phase;
 
   const [show, setShow] = useState(false);

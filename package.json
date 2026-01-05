@@ -4,12 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "node": "TS_NODE_PROJECT=tsconfig.node.json nodemon --watch . --ext ts --exec node --loader ts-node/esm server.ts",
-    "nodemon": "nodemon server.ts"
+    "socket:dev": "TS_NODE_PROJECT=tsconfig.node.json nodemon --watch server.ts --exec node --loader ts-node/esm server.ts",
+    "socket:build": "tsc -p tsconfig.node.json",
+    "socket:start": "node dist/server.js",
+    "nodemon": "nodemon server.ts",
+    "dev:all": "concurrently \"npm run dev\" \"npm run nodemon\""
   },
   "dependencies": {
     "clsx": "^2.1.1",

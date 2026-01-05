@@ -11,8 +11,8 @@ import {
 } from "@/constants";
 
 const ExecutionModal: React.FC = () => {
-  const { gameInstance, me, handleExecutionModalClose } = useGameStore();
-
+  const { gameInstance, getMe, handleExecutionModalClose } = useGameStore();
+  const me = getMe();
   const players = gameInstance?.players;
 
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);

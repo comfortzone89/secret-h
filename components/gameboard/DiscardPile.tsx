@@ -11,7 +11,7 @@ const DiscardPile: React.FC = () => {
   const cards = Array.from({ length: discardPileLength }, (_, i) => ({
     key: `discard-${i}`,
     src: "/images/board-policy.png",
-    offset: 45 + i * 4,
+    offset: `calc(24% + ${i * 0.6}vmin)`,
     order: i, // bottom = 0, top = highest
   }));
 
@@ -22,14 +22,14 @@ const DiscardPile: React.FC = () => {
         alt="Discard pile"
         width={100}
         height={300}
-        className="w-[120px]"
+        className="w-[30vmin] md:w-[20vmin]"
       />
 
       <AnimatePresence>
         {cards.map((card) => (
           <motion.div
             key={card.key}
-            className="absolute left-[20px] w-[80px]"
+            className="absolute left-[50%] -translate-x-1/2 w-[17vmin] md:w-[14vmin]"
             style={{ bottom: card.offset }}
             initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ const DiscardPile: React.FC = () => {
         ))}
       </AnimatePresence>
 
-      <span className="absolute bottom-2 w-full text-center text-xl">
+      <span className="absolute bottom-2 w-full text-center text-base md:text-xl">
         {discardPileLength}
       </span>
     </div>

@@ -131,7 +131,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
         (player.index === gameInstance?.lastGovernment.chancellorId ||
           (checkTermLimitForPresident &&
             player.index === gameInstance?.lastGovernment.presidentId)) && (
-          <div className="uppercase text-[4vmin] font-bold absolute left-[50%] -translate-x-1/2 top-[20%] leading-8">
+          <div className="uppercase text-[4vmin] font-bold absolute left-[50%] -translate-x-1/2 top-[20%] leading-8 z-10">
             Term Limit
           </div>
         )
@@ -144,9 +144,9 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
           highlight ? "bg-amber-500 rounded-2xl" : "",
           player.alive === false ||
             (checkTermLimits &&
-              player.index === gameInstance?.lastGovernment.chancellorId) ||
-            (checkTermLimitForPresident &&
-              player.index === gameInstance?.lastGovernment.presidentId)
+              (player.index === gameInstance?.lastGovernment.chancellorId ||
+                (checkTermLimitForPresident &&
+                  player.index === gameInstance?.lastGovernment.presidentId)))
             ? "opacity-30"
             : ""
         )}
@@ -194,7 +194,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
           alt="Player Portrait"
           width={120}
           height={120}
-          className="w-[20vmin] max-w-[16vh] h-auto"
+          className="w-[25vmin] max-w-[18vh] md:w-[20vmin] md:max-w[16vh] h-auto"
         />
 
         <Image
@@ -205,7 +205,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
           className="absolute top-[6.3%] w-[82%]"
         />
 
-        <p className="text-lg m-0 text-black font-medium absolute top-[64%]">
+        <p className="text-base md:text-lg m-0 text-black font-medium absolute top-[64%]">
           {player.name}
         </p>
 
@@ -216,10 +216,10 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
               alt={player.role}
               width={50}
               height={50}
-              className="w-[30px]"
+              className="w-[7vmin] md:w-[5vmin]"
             />
             <p
-              className={clsx("capitalize", {
+              className={clsx("capitalize text-sm md:text-lg", {
                 liberal: player.role === "liberal",
                 fascist: player.role === "fascist" || player.role === "hitler",
               })}

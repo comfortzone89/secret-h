@@ -12,11 +12,14 @@ import {
 } from "@/constants";
 
 const InvestigateModal: React.FC = () => {
-  const { gameInstance, me, handleInvestigateModalClose } = useGameStore();
+  const { gameInstance, getMe, handleInvestigateModalClose } = useGameStore();
+  const me = getMe();
 
   const players = gameInstance?.players;
 
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
+
+  console.log("SELECTED PLAYER:", selectedPlayer);
 
   return (
     <Modal modal="investigate" className="bg-black">

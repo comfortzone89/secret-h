@@ -34,7 +34,7 @@ export class Game {
 
   /* Tracks */
   liberalPolicies = 0; // 0..5
-  fascistPolicies = 0; // 0..6
+  fascistPolicies = 1; // 0..6
   electionTracker = 0; // failed governments 0..3
   vetoUnlocked = false;
 
@@ -477,7 +477,7 @@ export class Game {
   handleChancellorHandModalClose(enact: number): void {
     this.setChancellorEnact(enact);
 
-    if (this.checkWin()) return;
+    if (this.checkWin(true)) return;
 
     const policyName = this.enactedPolicies[this.enactedPolicies.length - 1];
     this.setModalAll("policy_enacted");
@@ -564,12 +564,22 @@ export class Game {
 
   handleInvestigateModalClose(playerIndex: number): void {
     this.presidentInvestigation = playerIndex;
-    this.setModal(playerIndex, "investigateResult");
+    this.setModalAll("investigateResult");
   }
 
-  handleInvestigateResultModalClose(): void {
-    this.presidentInvestigation = null;
-    this.startNewRound();
+  handleInvestigateResultModalClose(playerIndex: number): void {
+    if (this.currentPresidentIndex === playerIndex) {
+      this.presidentInvestigation = null;
+      this.players[playerIndex].endTerm = true;
+      this.setStatusBanner(playerIndex, "End your term to continue");
+    } else {
+      this.setStatusBanner(
+        playerIndex,
+        "Waiting for President to end his term...",
+        true
+      );
+    }
+    this.setModal(playerIndex, null);
   }
 
   handleSpecialElectionModalClose(newPresidentIndex: number): void {
@@ -660,7 +670,7 @@ export class Game {
 
   /* ---------------- Win checks ---------------- */
 
-  checkWin(): boolean {
+  checkWin(justPassedPolicy = false): boolean {
     if (this.liberalPolicies >= 5) {
       this.setModalAll("gameOver");
       this.gameWon = "liberal";
@@ -683,14 +693,17 @@ export class Game {
       return true;
     }
 
-    if (
-      this.fascistPolicies >= 3 &&
-      this.players[this.currentChancellorIndex!].role === "hitler"
-    ) {
-      this.setModalAll("gameOver");
-      this.gameWon = "fascist";
-      this.winReason = "hitlerElected";
-      return true;
+    // Hitler zone victory check
+    if (!justPassedPolicy) {
+      if (
+        this.fascistPolicies >= 3 &&
+        this.players[this.currentChancellorIndex!].role === "hitler"
+      ) {
+        this.setModalAll("gameOver");
+        this.gameWon = "fascist";
+        this.winReason = "hitlerElected";
+        return true;
+      }
     }
 
     return false;

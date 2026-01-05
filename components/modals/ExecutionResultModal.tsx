@@ -9,7 +9,9 @@ import {
 } from "@/constants";
 
 const ExecutionResultModal: React.FC = () => {
-  const { gameInstance, me, handleExecutionResultModalClose } = useGameStore();
+  const { gameInstance, getMe, handleExecutionResultModalClose } =
+    useGameStore();
+  const me = getMe();
 
   const executedPlayerIndex = gameInstance?.lastExecutedPlayer;
   if (executedPlayerIndex === null || executedPlayerIndex === undefined) return;
