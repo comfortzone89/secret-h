@@ -1,0 +1,28 @@
+# k8s/ingress-deployment.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secret-h-ingress
+  namespace: secret-h
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          # Socket path first — regex handled by ImplementationSpecific
+          - path: /socket.io(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: socket
+                port:
+                  number: 3001
+          # Next.js catch-all
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nextjs
+                port:
+                  number: 80
