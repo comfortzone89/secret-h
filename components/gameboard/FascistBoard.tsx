@@ -1,5 +1,5 @@
 "use client";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";

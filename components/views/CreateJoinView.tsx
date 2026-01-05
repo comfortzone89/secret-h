@@ -1,11 +1,11 @@
 "use client";
-import { useGameStore } from "@/store/game";
-import Input from "@/components/templates/Input";
-import Button from "@/components/templates/Button";
-import Label from "@/components/templates/Label";
+import { useGameStore } from "../../store/game";
+import Input from "../../components/templates/Input";
+import Button from "../../components/templates/Button";
+import Label from "../../components/templates/Label";
 import PlayerContainer from "../templates/PlayerContainer";
 import PortraitModal from "../modals/PortraitModal";
-import { useLobbyStore } from "@/store/lobby";
+import { useLobbyStore } from "../../store/lobby";
 
 export default function CreateJoinView() {
   const {

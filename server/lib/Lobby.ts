@@ -1,4 +1,4 @@
-import type { LobbyPlayer } from "../types/index";
+import type { LobbyPlayer } from "../types/index.js";
 
 export class Lobby {
   id: string;

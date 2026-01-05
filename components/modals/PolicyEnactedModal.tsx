@@ -2,9 +2,9 @@ import React from "react";
 import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import { motion } from "framer-motion";
-import { POLICY_ENACTED_MODAL_H } from "@/constants";
+import { POLICY_ENACTED_MODAL_H } from "../../constants";
 
 const PolicyEnactedModal: React.FC = () => {
   const { gameInstance, handlePolicyEnactedModalClose } = useGameStore();

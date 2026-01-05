@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { socket } from "@/lib/socket";
-import { LobbyPlayer, Player, View, Vote } from "@/types";
-import { Game } from "@/lib/Game.ts";
-import { DEFAULT_PORTRAIT } from "@/constants";
+import { LobbyPlayer, Player, View } from "../server/types/index";
+import { Game } from "../server/lib/Game";
+import { DEFAULT_PORTRAIT } from "../constants";
 
 interface LobbyState {
   // lobby

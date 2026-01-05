@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Button from "../templates/Button";
 import Modal from "../templates/Modal";
 import PlayerContainer from "../templates/PlayerContainer";
-import { useGameStore } from "@/store/game";
-import { NOMINATE_CHANCELLOR_MODAL_H } from "@/constants";
+import { useGameStore } from "../../store/game";
+import { NOMINATE_CHANCELLOR_MODAL_H } from "../../constants";
 
 const PickChancellorModal: React.FC = () => {
   const { gameInstance, getMe, handleNominateChancellorModalClose } =

@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import {
   ROLE_MODAL_FASCIST_P1,
   ROLE_MODAL_FASCIST_P2,
@@ -13,7 +13,7 @@ import {
   ROLE_MODAL_LIBERAL_P1,
   ROLE_MODAL_LIBERAL_P2,
   ROLE_MODAL_LIBERAL_P3,
-} from "@/constants";
+} from "../../constants";
 
 const RoleModal: React.FC = () => {
   const { gameInstance, getMe, handleRoleModalClose } = useGameStore();

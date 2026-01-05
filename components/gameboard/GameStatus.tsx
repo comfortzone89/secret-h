@@ -1,5 +1,5 @@
-import { useGameStore } from "@/store/game";
-import { Player } from "@/types";
+import { useGameStore } from "../../store/game";
+import { Player } from "../../server/types";
 import Image from "next/image";
 import React from "react";
 

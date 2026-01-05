@@ -1,8 +1,8 @@
 import React from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
-import { PROPOSE_VETO_MODAL_H, PROPOSE_VETO_MODAL_P1 } from "@/constants";
+import { useGameStore } from "../../store/game";
+import { PROPOSE_VETO_MODAL_H, PROPOSE_VETO_MODAL_P1 } from "../../constants";
 
 const ProposeVetoModal: React.FC = () => {
   const { gameInstance, handleProposeVetoModalClose } = useGameStore();

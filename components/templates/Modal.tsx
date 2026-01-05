@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 
 export default function Modal({
   children,

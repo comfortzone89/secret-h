@@ -1,4 +1,4 @@
-import Button from "@/components/templates/Button";
+import Button from "../../components/templates/Button";
 
 interface HomeViewProps {
   onClick: (mode: "create" | "join") => void;

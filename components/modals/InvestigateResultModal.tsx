@@ -2,10 +2,10 @@ import React from "react";
 import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import { motion } from "framer-motion";
 import PlayerContainer from "../templates/PlayerContainer";
-import { INVESTIGATE_RESULT_MODAL_H } from "@/constants";
+import { INVESTIGATE_RESULT_MODAL_H } from "../../constants";
 
 const InvestigateResultModal: React.FC = () => {
   const { gameInstance, getMe, handleInvestigateResultModalClose } =

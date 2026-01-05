@@ -1,6 +1,6 @@
-// lib/game/Game.ts
+// lib/game/Game
 // runtime values (must exist at runtime)
-import { powersTableFor } from "../helpers/index.ts";
+import { powersTableFor } from "../helpers/index.js";
 
 // type-only imports (erased at runtime)
 import type {
@@ -14,7 +14,7 @@ import type {
   Vote,
   Party,
   WinReason,
-} from "../types/index"; // NO .ts and NO .js
+} from "../types/index.js";
 
 /* ---------- Game class ---------- */
 

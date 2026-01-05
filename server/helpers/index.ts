@@ -1,4 +1,4 @@
-import type { ExecutivePowerName, MilestoneInfo } from "../types/index.ts";
+import type { ExecutivePowerName, MilestoneInfo } from "../types/index.js";
 import { randomUUID } from "crypto";
 
 export function generateRoomId(): string {

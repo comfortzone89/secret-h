@@ -1,4 +1,4 @@
-import { Game } from "@/lib/Game";
+import { Game } from "../lib/Game.js";
 
 export type Party = "liberal" | "fascist";
 export type Role = "liberal" | "fascist" | "hitler";

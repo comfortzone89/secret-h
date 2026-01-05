@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import clsx from "clsx";
-import { PRESIDENT_HAND_MODAL_H, PRESIDENT_HAND_MODAL_P1 } from "@/constants";
+import {
+  PRESIDENT_HAND_MODAL_H,
+  PRESIDENT_HAND_MODAL_P1,
+} from "../../constants";
 
 const PresidentHandModal: React.FC = () => {
   const { gameInstance, handlePresidentHandModalClose } = useGameStore();

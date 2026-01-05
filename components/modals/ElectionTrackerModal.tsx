@@ -2,13 +2,13 @@ import React from "react";
 import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import { motion } from "framer-motion";
 import {
   ELECTION_TRACKER_MODAL_H,
   ELECTION_TRACKER_MODAL_P1,
   ELECTION_TRACKER_MODAL_P2,
-} from "@/constants";
+} from "../../constants";
 
 const ElectionTrackerModal: React.FC = () => {
   const { gameInstance, handleElectionTrackerModalClose } = useGameStore();

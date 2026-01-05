@@ -1,9 +1,9 @@
 import React from "react";
 import Button from "../templates/Button";
 import Modal from "../templates/Modal";
-import { PORTRAIT_MODAL_H, PORTRAITS } from "@/constants";
+import { PORTRAIT_MODAL_H, PORTRAITS } from "../../constants";
 import Image from "next/image";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 
 const PortraitModal: React.FC = () => {
   const {

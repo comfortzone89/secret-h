@@ -3,10 +3,10 @@ import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
 import PlayerContainer from "../templates/PlayerContainer";
-import { useGameStore } from "@/store/game";
-import { Vote } from "@/types";
+import { useGameStore } from "../../store/game";
+import { Vote } from "../../server/types";
 import clsx from "clsx";
-import { VOTING_MODAL_H, VOTING_MODAL_P1 } from "@/constants";
+import { VOTING_MODAL_H, VOTING_MODAL_P1 } from "../../constants";
 
 const VotingModal: React.FC = () => {
   const { gameInstance, handleVoteModalClose } = useGameStore();

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Game } from "@/lib/Game";
-import { View } from "@/types";
-import { socket } from "@/lib/socket";
-import { useGameStore } from "@/store/game";
+import { Game } from "../../server/lib/Game";
+import { View } from "../../server/types";
+import { socket } from "../../socket/socket";
+import { useGameStore } from "../../store/game";
 
 import RoleModal from "../modals/RoleModal";
 import Players from "../gameboard/Players";

@@ -2,9 +2,9 @@ import React from "react";
 import Modal from "../templates/Modal";
 import Image from "next/image";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
-import { Policy } from "@/types";
-import { PEEK_MODAL_H } from "@/constants";
+import { useGameStore } from "../../store/game";
+import { Policy } from "../../server/types";
+import { PEEK_MODAL_H } from "../../constants";
 
 const PeekModal: React.FC = () => {
   const { gameInstance, handlePeekModalClose } = useGameStore();

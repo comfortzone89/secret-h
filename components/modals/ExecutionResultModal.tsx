@@ -1,12 +1,12 @@
 import React from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import PlayerContainer from "../templates/PlayerContainer";
 import {
   EXECUTION_RESULT_MODAL_H,
   EXECUTION_RESULT_MODAL_ME,
-} from "@/constants";
+} from "../../constants";
 
 const ExecutionResultModal: React.FC = () => {
   const { gameInstance, getMe, handleExecutionResultModalClose } =

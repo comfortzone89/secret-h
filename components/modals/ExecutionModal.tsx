@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import PlayerContainer from "../templates/PlayerContainer";
 import clsx from "clsx";
 import {
   EXECUTION_MODAL_H,
   EXECUTION_MODAL_P1,
   EXECUTION_MODAL_P2,
-} from "@/constants";
+} from "../../constants";
 
 const ExecutionModal: React.FC = () => {
   const { gameInstance, getMe, handleExecutionModalClose } = useGameStore();

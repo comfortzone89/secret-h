@@ -1,10 +1,19 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import http from "http";
 import { Server, Socket } from "socket.io";
-import { Game } from "./lib/Game.ts";
-import type { LobbyPlayer, Player } from "./types";
-import { generateRoomId } from "./helpers/index.ts";
-import { Lobby } from "./lib/Lobby.ts";
+import { Game } from "./lib/Game.js";
+import type { LobbyPlayer, Player } from "./types/index.js";
+import { generateRoomId } from "./helpers/index.js";
+import { Lobby } from "./lib/Lobby.js";
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 interface GameRoom {
   id: string;
@@ -19,7 +28,7 @@ const httpServer = http.createServer();
 
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.NEXT_PUBLIC_HOSTNAME,
+    origin: process.env.FRONTEND_ORIGIN,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -531,7 +540,6 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-const PORT = 3001;
-httpServer.listen(PORT, () =>
-  console.log(`Socket.io server running on port ${PORT}`)
+httpServer.listen(process.env.SOCKET_PORT, () =>
+  console.log(`Socket.io server running on port ${process.env.SOCKET_PORT}`)
 );

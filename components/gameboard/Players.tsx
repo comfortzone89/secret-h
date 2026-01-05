@@ -1,6 +1,6 @@
 import React from "react";
 import PlayerContainer from "../templates/PlayerContainer";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import { motion } from "framer-motion";
 
 const Players: React.FC = () => {

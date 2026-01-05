@@ -1,10 +1,10 @@
 import React from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import Image from "next/image";
 import PlayerContainer from "../templates/PlayerContainer";
-import { GAME_OVER_MODAL_PLEFT, GAME_OVER_MODAL_WAIT } from "@/constants";
+import { GAME_OVER_MODAL_PLEFT, GAME_OVER_MODAL_WAIT } from "../../constants";
 
 const GameOverModal: React.FC = () => {
   const { gameInstance, getMe, handleGameOverModalClose } = useGameStore();

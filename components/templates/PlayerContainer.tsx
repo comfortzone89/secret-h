@@ -1,8 +1,8 @@
 import Image from "next/image";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
-import { Player, Vote } from "@/types";
-import { useGameStore } from "@/store/game";
+import { Player, Vote } from "../../server/types";
+import { useGameStore } from "../../store/game";
 
 interface PlayerContainerProps {
   player?: Player; // after initialized

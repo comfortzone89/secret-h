@@ -33,9 +33,9 @@ metadata:
   name: redis
   namespace: secret-h
 spec:
+  clusterIP: None
   selector:
     app: redis
   ports:
     - port: 6379
       targetPort: 6379
-  clusterIP: None # headless service (good for Socket.IO scaling)

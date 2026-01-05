@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import PlayerContainer from "../templates/PlayerContainer";
 import clsx from "clsx";
 import {
@@ -9,7 +9,7 @@ import {
   INVESTIGATE_MODAL_P1,
   INVESTIGATE_MODAL_P2,
   INVESTIGATE_MODAL_P3,
-} from "@/constants";
+} from "../../constants";
 
 const InvestigateModal: React.FC = () => {
   const { gameInstance, getMe, handleInvestigateModalClose } = useGameStore();

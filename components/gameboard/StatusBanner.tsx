@@ -1,6 +1,6 @@
 "use client";
 
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import React from "react";
 
 const StatusBanner: React.FC = () => {

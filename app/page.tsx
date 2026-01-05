@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { socket } from "@/lib/socket";
+import { socket } from "../socket/socket";
 
-import HomeView from "@/components/views/HomeView";
-import CreateJoinView from "@/components/views/CreateJoinView";
-import LobbyView from "@/components/views/LobbyView";
-import GameView from "@/components/views/GameView";
+import HomeView from "../components/views/HomeView";
+import CreateJoinView from "../components/views/CreateJoinView";
+import LobbyView from "../components/views/LobbyView";
+import GameView from "../components/views/GameView";
 
-import { useGameStore } from "@/store/game";
-import { useLobbyStore } from "@/store/lobby";
+import { useGameStore } from "../store/game";
+import { useLobbyStore } from "../store/lobby";
 import type {
   LobbyUpdatePayload,
   GameStartPayload,
   ReconnectResponse,
   CheckRoomResponse,
-} from "@/types";
-import Loader from "@/components/templates/Loader";
+} from "../server/types/index";
+import Loader from "../components/templates/Loader";
 
 export default function Page() {
   /**

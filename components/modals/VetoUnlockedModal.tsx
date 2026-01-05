@@ -1,12 +1,12 @@
 import React from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import {
   UNLOCKED_VETO_MODAL_H,
   UNLOCKED_VETO_MODAL_P1,
   UNLOCKED_VETO_MODAL_P2,
-} from "@/constants";
+} from "../../constants";
 
 const VetoUnlockedModal: React.FC = () => {
   const { handleVetoUnlockedModalClose } = useGameStore();

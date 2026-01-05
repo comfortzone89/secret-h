@@ -2,8 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { socket } from "@/lib/socket";
-import { useGameStore } from "@/store/game";
+import { socket } from "../../socket/socket";
+import { useGameStore } from "../../store/game";
 
 const PhaseBanner: React.FC = () => {
   const { gameInstance, playerId, getMe } = useGameStore();

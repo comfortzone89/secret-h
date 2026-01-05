@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { socket } from "@/lib/socket";
-import { useGameStore } from "@/store/game";
-import Button from "@/components/templates/Button";
+import { socket } from "../../socket/socket";
+import { useGameStore } from "../../store/game";
+import Button from "../../components/templates/Button";
 import { Copy } from "lucide-react";
 import PlayerContainer from "../templates/PlayerContainer";
-import { Player } from "@/types";
-import { useLobbyStore } from "@/store/lobby";
+import { Player } from "../../server/types";
+import { useLobbyStore } from "../../store/lobby";
 
 export default function LobbyView() {
   const { roomId, players, setPlayers, setView } = useGameStore();

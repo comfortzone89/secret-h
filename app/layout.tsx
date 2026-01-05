@@ -1,4 +1,4 @@
-// app/layout.tsx
+// app/layout
 import Link from "next/link";
 import "./globals.css";
 import localFont from "next/font/local";

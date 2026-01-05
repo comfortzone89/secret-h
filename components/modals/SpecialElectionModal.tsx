@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Modal from "../templates/Modal";
 import Button from "../templates/Button";
-import { useGameStore } from "@/store/game";
+import { useGameStore } from "../../store/game";
 import PlayerContainer from "../templates/PlayerContainer";
 import clsx from "clsx";
 import {
   SPECIAL_ELECTION_MODAL_H,
   SPECIAL_ELECTION_MODAL_P1,
-} from "@/constants";
+} from "../../constants";
 
 const SpecialElectionModal: React.FC = () => {
   const { gameInstance, getMe, handleSpecialElectionModalClose } =
