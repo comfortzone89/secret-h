@@ -2,6 +2,7 @@
 import Link from "next/link";
 import "./globals.css";
 import localFont from "next/font/local";
+import { useEffect, useState } from "react";
 
 const germania = localFont({
   src: "../public/fonts/GermaniaOne-Regular.ttf",
@@ -19,13 +20,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { origin, pathname } = window.location;
+  const [pathname, setPathname] = useState<string>("#");
+
+  useEffect(() => {
+    setPathname(window.location.pathname);
+  });
 
   return (
     <html lang="en" className={`${germania.variable}`}>
       <body className="bg-stone-700 text-white font-[family-name:var(--font-germania)]">
         <header className="p-5 bg-amber-900 text-4xl text-white font-bold text-center h-[80px] flex items-center justify-center">
-          <Link href={origin + pathname || "#"}>Secret Hitler</Link>
+          <Link href={pathname || "#"}>Secret Hitler</Link>
         </header>
         <main className="h-[calc(100vh-80px)]">{children}</main>
       </body>

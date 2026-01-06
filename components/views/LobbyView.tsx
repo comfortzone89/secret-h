@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "../../socket/socket";
 import { useGameStore } from "../../store/game";
 import Button from "../../components/templates/Button";
@@ -13,11 +13,12 @@ export default function LobbyView() {
   const { roomId, players, setPlayers, setView } = useGameStore();
   const { maxPlayers } = useLobbyStore();
 
+  const [pathname, setPathname] = useState<string>("#");
+
   // Copy join URL
   const handleCopy = () => {
     if (!roomId) return;
-    const { origin, pathname } = window.location;
-    const url = `${origin + pathname}/?roomId=${roomId}`;
+    const url = `${pathname}/?roomId=${roomId}`;
     navigator.clipboard.writeText(url).then(() => {
       // You could replace with a toast notification
       //   alert("Copied to clipboard!");
@@ -26,6 +27,8 @@ export default function LobbyView() {
 
   useEffect(() => {
     if (!roomId) return;
+
+    setPathname(window.location.pathname);
 
     const handleLobbyUpdate = (data: {
       players: Player[];
