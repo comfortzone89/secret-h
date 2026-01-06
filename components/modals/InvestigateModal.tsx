@@ -19,8 +19,6 @@ const InvestigateModal: React.FC = () => {
 
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
 
-  console.log("SELECTED PLAYER:", selectedPlayer);
-
   return (
     <Modal modal="investigate" className="bg-black">
       <h2 className="text-xl mb-4 text-center">{INVESTIGATE_MODAL_H}</h2>

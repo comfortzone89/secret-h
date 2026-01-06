@@ -55,8 +55,9 @@ export default function GameView() {
       setGameInstance(game);
 
       if (view) {
-        const pathname = window.location.pathname;
-        window.history.replaceState({}, document.title, pathname);
+        const { origin } = window.location;
+        const url = origin;
+        window.history.replaceState({}, document.title, url);
         setView(view);
       }
     };
