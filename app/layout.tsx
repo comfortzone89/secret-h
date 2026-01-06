@@ -24,7 +24,7 @@ export default function RootLayout({
 
   useEffect(() => {
     setPathname(window.location.pathname);
-  });
+  }, []);
 
   return (
     <html lang="en" className={`${germania.variable}`}>
