@@ -16,7 +16,8 @@ export default function LobbyView() {
   // Copy join URL
   const handleCopy = () => {
     if (!roomId) return;
-    const url = `${process.env.NEXT_PUBLIC_HOSTNAME}/?roomId=${roomId}`;
+    const { origin, pathname } = window.location;
+    const url = `${origin + pathname}/?roomId=${roomId}`;
     navigator.clipboard.writeText(url).then(() => {
       // You could replace with a toast notification
       //   alert("Copied to clipboard!");
