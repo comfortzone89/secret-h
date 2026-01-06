@@ -20,7 +20,7 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
-            - name: NEXT_PUBLIC_SOCKET_URL
+            - name: NEXT_PUBLIC_SOCKET_ORIGIN
               value: "http://socket:3001"
           ports:
             - containerPort: 3000
@@ -38,9 +38,9 @@ metadata:
   name: nextjs
   namespace: secret-h
 spec:
+  type: ClusterIP
   selector:
     app: nextjs
   ports:
     - port: 80
       targetPort: 3000
-  type: LoadBalancer

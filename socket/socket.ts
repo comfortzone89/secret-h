@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "/socket.io";
-
-export const socket = io(SOCKET_URL, {
+export const socket = io(process.env.NEXT_PUBLIC_SOCKET_ORIGIN!, {
+  path: process.env.NEXT_PUBLIC_SOCKET_PATH || "/socket.io",
   autoConnect: false,
   withCredentials: true,
+  transports: ["websocket", "polling"],
 });
