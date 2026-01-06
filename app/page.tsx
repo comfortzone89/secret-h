@@ -121,7 +121,7 @@ export default function Page() {
         window.history.replaceState(
           {},
           document.title,
-          `${process.env.NEXT_PUBLIC_HOSTNAME}/?roomId=${data.roomId}`
+          `/?roomId=${data.roomId}`
         );
         setView("lobby");
       }
