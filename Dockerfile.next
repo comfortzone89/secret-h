@@ -1,4 +1,4 @@
-# ---------- Build frontend ----------
+# ---------- Build stage ----------
 FROM node:20-alpine AS builder
 WORKDIR /app
 
@@ -6,19 +6,22 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-# builds .next folder
 RUN npm run build
 
-# ---------- Runtime ----------
+# ---------- Runtime stage ----------
 FROM node:20-alpine AS runner
 WORKDIR /app
+
 ENV NODE_ENV=production
+ENV PORT=3000
 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
+# Copy standalone build
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/next.config.* ./
 
+# Expose port for K8s Service
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+# Run Next.js server
+CMD ["node", "server.js"]
