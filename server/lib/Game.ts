@@ -34,7 +34,7 @@ export class Game {
 
   /* Tracks */
   liberalPolicies = 0; // 0..5
-  fascistPolicies = 1; // 0..6
+  fascistPolicies = 0; // 0..6
   electionTracker = 0; // failed governments 0..3
   vetoUnlocked = false;
 
