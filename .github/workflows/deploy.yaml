@@ -22,6 +22,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # ----------------------------
+      # Build & push Next.js image
+      # ----------------------------
       - name: Build & push Next.js image
         uses: docker/build-push-action@v5
         with:
@@ -32,6 +35,9 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:${{ github.sha }}
 
+      # ----------------------------
+      # Build & push Socket image
+      # ----------------------------
       - name: Build & push Socket server image
         uses: docker/build-push-action@v5
         with:
@@ -41,3 +47,16 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:${{ github.sha }}
+
+      # ----------------------------
+      # Build & push Nginx image
+      # ----------------------------
+      - name: Build & push Nginx image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./nginx
+          file: ./nginx/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:${{ github.sha }}

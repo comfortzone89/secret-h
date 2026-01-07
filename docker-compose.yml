@@ -2,16 +2,12 @@ version: "3.9"
 
 services:
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    container_name: nginx
+    image: shakenbake89/secret-h-nginx:latest
     ports:
       - "80:80"
     depends_on:
       - nextjs
       - socket
-    restart: unless-stopped
 
   nextjs:
     image: shakenbake89/secret-h-next:latest
