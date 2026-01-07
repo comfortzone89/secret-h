@@ -1,2 +1,7 @@
 FROM nginx:1.25-alpine
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+
+# Remove default site config (optional but recommended)
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy your site config
+COPY default.conf /etc/nginx/conf.d/default.conf
