@@ -17,14 +17,8 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: path.resolve(__dirname, "../.env") });
 }
 
-// Environment variables
 const PORT = Number(process.env.SOCKET_PORT) || 3001;
-// In dev, allow localhost:3000 (Next.js dev server)
-// In production, allow all origins because Nginx/Ingress handles same-origin
-const FRONTEND_ORIGIN =
-  process.env.NODE_ENV === "development"
-    ? process.env.FRONTEND_ORIGIN || "http://localhost:3000"
-    : "*";
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost";
 
 interface GameRoom {
   id: string;
@@ -552,6 +546,6 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-httpServer.listen(PORT, "0.0.0.0", () =>
+httpServer.listen(PORT, () =>
   console.log(`Socket.io server running on port ${PORT}`)
 );
