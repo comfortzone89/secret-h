@@ -20,7 +20,7 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
-            - name: NEXT_PUBLIC_SOCKET_ORIGIN
+            - name: NEXT_PUBLIC_SOCKET_URL
               value: "http://socket:3001"
           ports:
             - containerPort: 3000
