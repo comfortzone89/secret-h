@@ -545,6 +545,6 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-httpServer.listen(PORT, () =>
+httpServer.listen(PORT, "0.0.0.0", () =>
   console.log(`Socket.io server running on port ${PORT}`)
 );
