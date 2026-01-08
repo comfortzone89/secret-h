@@ -18,7 +18,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const PORT = Number(process.env.SOCKET_PORT) || 3001;
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost";
 
 interface GameRoom {
   id: string;
@@ -34,7 +33,7 @@ const httpServer = http.createServer();
 const io = new Server(httpServer, {
   path: "/socket.io",
   cors: {
-    origin: FRONTEND_ORIGIN,
+    origin: true,
     methods: ["GET", "POST"],
     credentials: true,
   },

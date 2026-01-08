@@ -3,45 +3,41 @@ version: "3.9"
 services:
   nginx:
     build:
-      context: ./nginx
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.nginx
     container_name: nginx
     ports:
-      - "8000:80"
+      - "8000:80" # Local access via http://localhost
     depends_on:
       - nextjs
       - socket
 
   nextjs:
-    image: shakenbake89/secret-h-next:latest
     container_name: nextjs
-    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.next
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_SOCKET_ORIGIN: http://socket:3001
-      NEXT_PUBLIC_SOCKET_PATH: /socket.io
-    ports:
-      - "3000:3000"
     depends_on:
       - socket
 
   socket:
-    image: shakenbake89/secret-h-socket:latest
     container_name: socket
-    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.socket
     environment:
       NODE_ENV: production
+      SOCKET_PORT: "3001"
       REDIS_HOST: redis
       REDIS_PORT: "6379"
-      SOCKET_PORT: "3001"
-      FRONTEND_ORIGIN: http://localhost:3000
-    ports:
-      - "3001:3001"
+    depends_on:
+      - redis
 
   redis:
-    image: redis:7-alpine
     container_name: redis
-    restart: unless-stopped
+    image: redis:7-alpine
     volumes:
       - redis-data:/data
 

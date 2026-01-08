@@ -1,11 +1,12 @@
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
-const origin = process.env.NEXT_PUBLIC_SOCKET_ORIGIN!;
-const path = process.env.NEXT_PUBLIC_SOCKET_PATH || "/socket.io";
+// Dev: connect directly to localhost:3001
+// Docker / production: use same origin
+const socketUrl =
+  process.env.NODE_ENV === "development" ? "http://localhost:3001" : undefined; // undefined → same origin
 
-export const socket: Socket = io(origin, {
-  path,
-  autoConnect: false,
+export const socket = io(socketUrl, {
+  path: process.env.NEXT_PUBLIC_SOCKET_PATH || "/socket.io",
   withCredentials: true,
-  transports: ["websocket", "polling"],
+  autoConnect: false,
 });
