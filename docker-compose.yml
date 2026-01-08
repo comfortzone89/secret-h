@@ -14,9 +14,7 @@ services:
 
   nextjs:
     container_name: nextjs
-    build:
-      context: .
-      dockerfile: Dockerfile.next
+    image: shakenbake89/secret-h-next:latest
     environment:
       NODE_ENV: production
     depends_on:
@@ -24,9 +22,7 @@ services:
 
   socket:
     container_name: socket
-    build:
-      context: .
-      dockerfile: Dockerfile.socket
+    image: shakenbake89/secret-h-socket:latest
     environment:
       NODE_ENV: production
       SOCKET_PORT: "3001"
