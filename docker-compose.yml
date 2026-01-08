@@ -2,9 +2,7 @@ version: "3.9"
 
 services:
   nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    image: shakenbake89/secret-h-nginx:latest
     container_name: nginx
     ports:
       - "8000:80" # Local access via http://localhost
@@ -13,10 +11,7 @@ services:
       - socket
 
   nextjs:
-    container_name: nextjs
-    build:
-      context: .
-      dockerfile: Dockerfile.next
+    image: shakenbake89/secret-h-next:latest
     environment:
       NODE_ENV: production
     depends_on:
@@ -24,9 +19,7 @@ services:
 
   socket:
     container_name: socket
-    build:
-      context: .
-      dockerfile: Dockerfile.socket
+    image: shakenbake89/secret-h-socket:latest
     environment:
       NODE_ENV: production
       SOCKET_PORT: "3001"
