@@ -17,6 +17,7 @@ import type {
   CheckRoomResponse,
 } from "../server/types/index";
 import Loader from "../components/templates/Loader";
+import ManualOrder from "@/components/views/ManualOrder";
 
 export default function Page() {
   /**
@@ -193,6 +194,9 @@ export default function Page() {
 
     case "lobby":
       return <LobbyView />;
+
+    case "manualOrder":
+      return <ManualOrder />;
 
     case "game":
       return <GameView />;

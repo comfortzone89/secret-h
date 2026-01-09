@@ -5,7 +5,6 @@ import Button from "../../components/templates/Button";
 import Label from "../../components/templates/Label";
 import PlayerContainer from "../templates/PlayerContainer";
 import PortraitModal from "../modals/PortraitModal";
-import { useLobbyStore } from "../../store/lobby";
 
 export default function CreateJoinView() {
   const {
@@ -18,9 +17,8 @@ export default function CreateJoinView() {
     setMaxPlayers,
     setLocalRoomId,
     handleGameSubmit,
+    setPlayerOrder,
   } = useGameStore();
-
-  const { setPlayerOrder } = useLobbyStore();
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-4">

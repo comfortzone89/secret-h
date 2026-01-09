@@ -64,7 +64,12 @@ export class Game {
   /* Veto negotiation state (used during Legislative_Chancellor) */
   chancellorProposedVeto = false;
 
-  constructor(id: string, hostId: string, lobbyPlayers: Player[]) {
+  constructor(
+    id: string,
+    hostId: string,
+    lobbyPlayers: Player[],
+    playersId?: string[]
+  ) {
     this.id = id;
     this.hostId = hostId;
     this.players = lobbyPlayers.map((p) => ({
@@ -83,7 +88,7 @@ export class Game {
       endTerm: false,
     }));
 
-    this.assignRoles();
+    this.assignRoles(playersId);
     this.resetFullDeckAndShuffle();
   }
 
@@ -177,7 +182,7 @@ export class Game {
     }
   }
 
-  assignRoles() {
+  assignRoles(playersId: string[] | undefined) {
     const total = this.players.length;
 
     // Determine number of fascists (including Hitler)
@@ -220,6 +225,19 @@ export class Game {
     this.players.forEach((_, i) => {
       this.players[i].index = i;
     });
+
+    // Manual order
+    if (playersId) {
+      const playerMap = new Map(this.players.map((p) => [p.id, p]));
+
+      this.players = playersId
+        .map((id) => playerMap.get(id))
+        .filter((p): p is (typeof this.players)[number] => Boolean(p));
+
+      this.players.forEach((player, index) => {
+        player.index = index;
+      });
+    }
   }
 
   setModal(playerIndex: number, modal: Modal) {
@@ -657,6 +675,7 @@ export class Game {
   handleProposeVetoModalClose(playerIndex: number, oblige: boolean): void {
     if (oblige) {
       this.voteFailed();
+      this.setModalAll("election_tracker");
     } else {
       this.setModal(playerIndex, null);
       const chancellorIndex = this.currentChancellorIndex;

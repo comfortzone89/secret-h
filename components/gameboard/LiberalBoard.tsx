@@ -25,7 +25,7 @@ const LiberalBoard: React.FC = () => {
         alt="Election Tracker"
         width={30}
         height={30}
-        className="w-[3vmin] absolute bottom-[17%]"
+        className="w-[3%] absolute bottom-[17%]"
         style={{ left: `${34.3 + electionTracker * 9.2}%` }}
       />
 

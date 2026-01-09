@@ -40,7 +40,7 @@ export default function Modal({
       {canShowModal && (
         <motion.div
           key="backdrop"
-          className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -48,7 +48,7 @@ export default function Modal({
           <motion.div
             key="modal"
             className={clsx(
-              "bg-black p-6 rounded-xl shadow-lg relative max-w-3xl w-full",
+              "bg-black/90 p-6 rounded-xl shadow-lg relative max-w-3xl w-full",
               className
             )}
             initial={{ scale: 0.95, opacity: 0 }}

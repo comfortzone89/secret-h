@@ -46,13 +46,19 @@ export default function LobbyView() {
       setView("home");
     };
 
+    const handleManualOrder = () => {
+      setView("manualOrder");
+    };
+
     socket.on("lobby_update", handleLobbyUpdate);
     socket.on("game_start", handleGameStart);
+    socket.on("manual_order", handleManualOrder);
     socket.on("room_closed", handleRoomClosed);
 
     return () => {
       socket.off("lobby_update", handleLobbyUpdate);
       socket.off("game_start", handleGameStart);
+      socket.off("manual_order", handleManualOrder);
       socket.off("room_closed", handleRoomClosed);
     };
   }, [roomId, setPlayers, setView]);

@@ -22,7 +22,7 @@ export type Modal =
   | "gameOver"
   | null;
 export type Vote = "yes" | "no" | null;
-export type View = "home" | "createJoin" | "lobby" | "game";
+export type View = "home" | "createJoin" | "lobby" | "game" | "manualOrder";
 export interface StatusBanner {
   text: string;
   loading: boolean;
@@ -97,7 +97,7 @@ export interface LobbyUpdatePayload {
   players: Player[];
   maxPlayers: number;
   roomId: string;
-  order: "random" | "manual";
+  playerOrder: "random" | "manual";
 }
 
 export interface GameStartPayload {

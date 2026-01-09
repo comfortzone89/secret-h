@@ -19,12 +19,16 @@ if (process.env.NODE_ENV !== "production") {
 
 const PORT = Number(process.env.SOCKET_PORT) || 3001;
 
+type PlayerOrder = "random" | "manual";
+
 interface GameRoom {
   id: string;
   hostId: string;
   maxPlayers: number;
   players: Player[];
   started: boolean;
+  playerOrder: PlayerOrder;
+  playerOrderFinished: boolean;
   game?: Game;
 }
 
@@ -40,6 +44,51 @@ const io = new Server(httpServer, {
 });
 
 const rooms: Record<string, GameRoom> = {};
+
+function startGame(room: GameRoom, playersId?: string[]) {
+  room.started = true;
+
+  // Create Game instance (roles assigned automatically)
+  room.game = new Game(
+    room.id,
+    room.hostId,
+    room.players.map((p) => ({
+      id: p.id,
+      permaId: p.permaId,
+      name: p.name,
+      portrait: p.portrait,
+      vote: null,
+    })),
+    playersId
+  );
+
+  console.log("game instance created:", room.game);
+
+  // Emit roles directly to each player
+  room.players.forEach((player) => {
+    const gamePlayer = room.game!.players.find((p) => p.id === player.id);
+    if (gamePlayer) {
+      io.to(player.id!).emit("role_assignment", {
+        role: gamePlayer.role,
+        party: gamePlayer.party,
+        vote: null,
+      });
+    }
+  });
+
+  // Notify everyone the game is starting
+  io.in(room.id).emit("game_start", {
+    roomId: room.id,
+    players: room.game.players.map((p) => ({
+      id: p.id,
+      name: p.name,
+      portrait: p.portrait,
+      vote: null,
+    })),
+    hostId: room.hostId,
+    game: room.game,
+  });
+}
 
 io.on("connection", (socket: Socket) => {
   console.log("User connected:", socket.id);
@@ -61,10 +110,15 @@ io.on("connection", (socket: Socket) => {
   socket.on(
     "create_game",
     (
-      data: { name: string; maxPlayers: number; portrait: string },
+      data: {
+        name: string;
+        maxPlayers: number;
+        portrait: string;
+        playerOrder: PlayerOrder;
+      },
       callback
     ) => {
-      const { name, maxPlayers, portrait } = data;
+      const { name, maxPlayers, portrait, playerOrder } = data;
       const roomId = generateRoomId();
       const player: LobbyPlayer = {
         id: socket.id,
@@ -73,12 +127,14 @@ io.on("connection", (socket: Socket) => {
         portrait,
       };
 
-      const room: Lobby = {
+      const room: GameRoom = {
         id: roomId,
         hostId: socket.id,
         maxPlayers,
         players: [player],
         started: false,
+        playerOrder,
+        playerOrderFinished: false,
       };
 
       rooms[roomId] = room;
@@ -135,50 +191,19 @@ io.on("connection", (socket: Socket) => {
 
       // --- START GAME IF ROOM FULL ---
       if (room.players.length === room.maxPlayers) {
-        room.started = true;
-
-        // Create Game instance (roles assigned automatically)
-        room.game = new Game(
-          roomId,
-          room.hostId,
-          room.players.map((p) => ({
-            id: p.id,
-            permaId: p.permaId,
-            name: p.name,
-            portrait: p.portrait,
-            vote: null,
-          }))
-        );
-
-        console.log("game instance created:", room.game);
-
-        // Emit roles directly to each player
-        room.players.forEach((player) => {
-          const gamePlayer = room.game!.players.find((p) => p.id === player.id);
-          if (gamePlayer) {
-            io.to(player.id!).emit("role_assignment", {
-              role: gamePlayer.role,
-              party: gamePlayer.party,
-              vote: null,
-            });
-          }
-        });
-
-        // Notify everyone the game is starting
-        io.in(roomId).emit("game_start", {
-          roomId: room.id,
-          players: room.game.players.map((p) => ({
-            id: p.id,
-            name: p.name,
-            portrait: p.portrait,
-            vote: null,
-          })),
-          hostId: room.hostId,
-          game: room.game,
-        });
+        if (room.playerOrder === "manual") {
+          io.to(room.hostId).emit("manual_order");
+        } else if (room.playerOrder === "random" || room.playerOrderFinished) {
+          startGame(room);
+        }
       }
     }
   );
+
+  socket.on("start_manual_game", ({ roomId, playersId }) => {
+    const room = rooms[roomId];
+    startGame(room, playersId);
+  });
 
   // DISCONNECT
   socket.on("disconnect", () => {

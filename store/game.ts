@@ -21,6 +21,7 @@ interface GameState {
   gameInstance: Game | null;
   maxPlayers: number | null;
   me: Player | null;
+  playerOrder: "random" | "manual";
 
   initializeGame: (game: Game) => void;
 
@@ -46,6 +47,7 @@ interface GameState {
   getMe: () => Player | null;
   getPlayerIndex: () => number | null;
   setPlayerIndex: (playerIndex: number) => void;
+  setPlayerOrder: (playerOrder: GameState["playerOrder"]) => void;
 
   // game socket handlers
   handleRoleModalClose: () => void;
@@ -85,6 +87,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   gameInstance: null,
   maxPlayers: null,
   me: null,
+  playerOrder: "random",
 
   initializeGame: (game: Game) =>
     set({
@@ -105,6 +108,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   setPlayers: (players) => set({ players }),
   setGameInstance: (gameInstance) => set({ gameInstance }),
   setMaxPlayers: (count) => set({ maxPlayers: count }),
+  setPlayerOrder: (playerOrder) => set({ playerOrder }),
   setMe: (player) =>
     set((state) => {
       if (state.me?.id === player.id) return state;
@@ -267,7 +271,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   handleVeto: () => {
-    const { gameInstance, playerIndex } = get();
+    const { gameInstance, getMe } = get();
+    const me = getMe();
+    const playerIndex = me?.index;
     socket.emit("handleVeto", { roomId: gameInstance?.id, playerIndex });
   },
 
@@ -307,6 +313,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       localRoomId,
       roomId,
       selectedPortrait,
+      playerOrder,
       setRoomId,
       setPlayers,
       setView,
@@ -320,7 +327,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
       socket.emit(
         "create_game",
-        { name, maxPlayers, portrait: selectedPortrait },
+        { name, maxPlayers, portrait: selectedPortrait, playerOrder },
         ({ roomId, players }: { roomId: string; players: Player[] }) => {
           setRoomId(roomId);
           setPlayers(players);

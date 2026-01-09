@@ -6,13 +6,26 @@ export class Lobby {
   maxPlayers: number;
   players: LobbyPlayer[];
   started: boolean;
+  playerOrder: string;
+  playerOrderFinished: boolean;
 
-  constructor(
-    id: string,
-    hostId: string,
-    maxPlayers: number,
-    lobbyPlayers: LobbyPlayer[]
-  ) {
+  constructor(params: {
+    id: string;
+    hostId: string;
+    maxPlayers: number;
+    lobbyPlayers: LobbyPlayer[];
+    started?: boolean;
+    playerOrder: string;
+  }) {
+    const {
+      id,
+      hostId,
+      maxPlayers,
+      lobbyPlayers,
+      started = false,
+      playerOrder,
+    } = params;
+
     this.id = id;
     this.hostId = hostId;
     this.maxPlayers = maxPlayers;
@@ -24,6 +37,8 @@ export class Lobby {
       modal: null,
       modalConfirm: false,
     }));
-    this.started = false;
+    this.started = started;
+    this.playerOrder = playerOrder;
+    this.playerOrderFinished = false;
   }
 }

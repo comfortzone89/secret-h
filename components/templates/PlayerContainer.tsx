@@ -194,7 +194,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
           alt="Player Portrait"
           width={120}
           height={120}
-          className="w-[25vmin] max-w-[18vh] md:w-[20vmin] md:max-w[16vh] h-auto"
+          className="w-[25vmin] md:w-[15vmin] h-auto"
         />
 
         <Image
