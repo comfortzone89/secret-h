@@ -11,13 +11,30 @@ jobs:
 
     steps:
       # ----------------------------
-      # Checkout
+      # Checkout repository
       # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
       # ----------------------------
-      # Docker
+      # Debug EB bundle files
+      # ----------------------------
+      - name: Debug EB bundle inputs
+        run: |
+          echo "===== Current working directory ====="
+          pwd
+
+          echo "===== List root files ====="
+          ls -la
+
+          echo "===== Dockerrun.aws.json contents ====="
+          cat Dockerrun.aws.json
+
+          echo "===== docker-compose.yml contents ====="
+          cat docker-compose.yml
+
+      # ----------------------------
+      # Docker setup
       # ----------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -72,18 +89,11 @@ jobs:
           aws-region: us-east-1
 
       # ----------------------------
-      # Debug bundle
-      # ----------------------------
-      - name: Debug bundle contents
-        run: |
-          ls -la
-          cat Dockerrun.aws.json
-      # ----------------------------
       # Prepare EB bundle
       # ----------------------------
-      - name: Package EB file
+      - name: Package EB bundle
         run: |
-          zip -r deploy.zip Dockerrun.aws.json docker-compose.yml
+          zip -j deploy.zip Dockerrun.aws.json docker-compose.yml
 
       # ----------------------------
       # Deploy to Elastic Beanstalk
