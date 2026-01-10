@@ -72,6 +72,13 @@ jobs:
           aws-region: us-east-1
 
       # ----------------------------
+      # Debug bundle
+      # ----------------------------
+      - name: Debug bundle contents
+        run: |
+          ls -la
+          cat Dockerrun.aws.json
+      # ----------------------------
       # Prepare EB bundle
       # ----------------------------
       - name: Package EB file
