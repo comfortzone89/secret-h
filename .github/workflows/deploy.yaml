@@ -11,13 +11,29 @@ jobs:
 
     steps:
       # ----------------------------
-      # Checkout
+      # Checkout repository
       # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
       # ----------------------------
-      # Docker
+      # Debug EB files
+      # ----------------------------
+      - name: Debug EB files
+        run: |
+          echo "===== DEBUG START ====="
+          echo "Working directory:"
+          pwd
+          echo "Files in root:"
+          ls -la
+          echo "Dockerrun.aws.json contents:"
+          cat Dockerrun.aws.json
+          echo "docker-compose.yml contents:"
+          cat docker-compose.yml
+          echo "===== DEBUG END ====="
+
+      # ----------------------------
+      # Docker setup
       # ----------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -38,8 +54,8 @@ jobs:
           file: Dockerfile.next
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:latest
 
       - name: Build & push Socket image
         uses: docker/build-push-action@v5
@@ -48,8 +64,8 @@ jobs:
           file: Dockerfile.socket
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:latest
 
       - name: Build & push Nginx image
         uses: docker/build-push-action@v5
@@ -58,8 +74,8 @@ jobs:
           file: Dockerfile.nginx
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:latest
 
       # ----------------------------
       # AWS credentials
@@ -74,9 +90,13 @@ jobs:
       # ----------------------------
       # Prepare EB bundle
       # ----------------------------
-      - name: Package EB file
+      - name: Package EB bundle
         run: |
-          zip -r deploy.zip Dockerrun.aws.json docker-compose.yml
+          echo "Files before zipping:"
+          ls -la
+          zip -j deploy.zip Dockerrun.aws.json docker-compose.yml
+          echo "Contents of deploy.zip:"
+          unzip -l deploy.zip
 
       # ----------------------------
       # Deploy to Elastic Beanstalk
