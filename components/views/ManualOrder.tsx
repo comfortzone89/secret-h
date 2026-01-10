@@ -3,14 +3,12 @@
 import { useState } from "react";
 import { useGameStore } from "../../store/game";
 import PlayerContainer from "../templates/PlayerContainer";
-import { useLobbyStore } from "../../store/lobby";
 import { clsx } from "clsx";
 import Button from "../templates/Button";
 import { socket } from "@/socket/socket";
 
 export default function ManualOrder() {
-  const { roomId, players } = useGameStore();
-  const { maxPlayers } = useLobbyStore();
+  const { roomId, players, maxPlayers } = useGameStore();
 
   const [playerOrderArray, setPlayerOrderArray] = useState<string[]>([]);
 

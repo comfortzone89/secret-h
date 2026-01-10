@@ -11,7 +11,6 @@ import { Server, Socket } from "socket.io";
 import { Game } from "./lib/Game.js";
 import type { LobbyPlayer, Player } from "./types/index.js";
 import { generateRoomId } from "./helpers/index.js";
-import { Lobby } from "./lib/Lobby.js";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: path.resolve(__dirname, "../.env") });

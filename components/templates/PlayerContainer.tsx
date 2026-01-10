@@ -168,7 +168,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="yea z-10 absolute w-[12vmin] h-[4.5vmin] top-[40%]"
+              className="yea z-10 absolute w-[75%] h-[20%] top-[40%]"
             >
               <Image src="/images/player-icon-ja.png" alt="Yea" fill />
             </motion.div>
@@ -182,7 +182,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="yea z-10 absolute w-[12vmin] h-[4.5vmin] top-[40%]"
+              className="nay z-10 absolute w-[75%] h-[20%] top-[40%]"
             >
               <Image src="/images/player-icon-nein.png" alt="Yea" fill />
             </motion.div>
@@ -192,8 +192,8 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
         <Image
           src="/images/player-base.png"
           alt="Player Portrait"
-          width={120}
-          height={120}
+          width={256}
+          height={366}
           className="w-[25vmin] md:w-[15vmin] h-auto"
         />
 
@@ -216,7 +216,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
               alt={player.role}
               width={50}
               height={50}
-              className="w-[7vmin] md:w-[5vmin]"
+              className="w-[22%]"
             />
             <p
               className={clsx("capitalize text-sm md:text-lg", {

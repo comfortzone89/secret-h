@@ -9,7 +9,6 @@ import LobbyView from "../components/views/LobbyView";
 import GameView from "../components/views/GameView";
 
 import { useGameStore } from "../store/game";
-import { useLobbyStore } from "../store/lobby";
 import type {
   LobbyUpdatePayload,
   GameStartPayload,
@@ -41,11 +40,16 @@ export default function Page() {
    *  STORES
    * --------------------------------------------------------
    */
-  const { view, setView, setMode, initializeGame, setRoomId, setMaxPlayers } =
-    useGameStore();
-
-  const { setLobbyPlayers, setMaxLobbyPlayers, setLobbyPlayerId } =
-    useLobbyStore();
+  const {
+    view,
+    setView,
+    setMode,
+    initializeGame,
+    setRoomId,
+    setMaxPlayers,
+    setPlayers,
+    setPlayerId,
+  } = useGameStore();
 
   /**
    * --------------------------------------------------------
@@ -76,7 +80,7 @@ export default function Page() {
       const joinedRoomId = joinedRoomIdRef.current;
       const permaId = permaIdRef.current;
 
-      setLobbyPlayerId(socket.id || "");
+      setPlayerId(socket.id || "");
 
       if (!roomId) return;
 
@@ -115,8 +119,8 @@ export default function Page() {
     };
 
     const handleLobbyUpdate = (data: LobbyUpdatePayload) => {
-      setLobbyPlayers(data.players);
-      setMaxLobbyPlayers(data.maxPlayers);
+      setPlayers(data.players);
+      setMaxPlayers(data.maxPlayers);
 
       if (!useGameStore.getState().gameInstance) {
         window.history.replaceState(

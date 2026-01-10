@@ -7,11 +7,9 @@ import Button from "../../components/templates/Button";
 import { Copy } from "lucide-react";
 import PlayerContainer from "../templates/PlayerContainer";
 import { Player } from "../../server/types";
-import { useLobbyStore } from "../../store/lobby";
 
 export default function LobbyView() {
-  const { roomId, players, setPlayers, setView } = useGameStore();
-  const { maxPlayers } = useLobbyStore();
+  const { roomId, players, maxPlayers, setPlayers, setView } = useGameStore();
 
   // Copy join URL
   const handleCopy = () => {

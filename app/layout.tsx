@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en" className={`${germania.variable}`}>
       <body className="bg-stone-700 text-white font-[family-name:var(--font-germania)]">
         <Header />
-        <main className="h-[calc(100vh-80px)]">{children}</main>
+        <main className="h-[calc(100vh-80px)] mt-[80px]">{children}</main>
       </body>
     </html>
   );

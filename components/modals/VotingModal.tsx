@@ -24,8 +24,10 @@ const VotingModal: React.FC = () => {
     <Modal modal="voting" className="bg-black">
       <h2 className="text-xl font-bold uppercase mb-5">{VOTING_MODAL_H}</h2>
       <div className="flex gap-5 mb-4">
-        <PlayerContainer player={chancellor} />
         <div>
+          <PlayerContainer player={chancellor} />
+        </div>
+        <div className="flex-1">
           <p className="mb-4">
             {presidentName} has nominated {chancellorName} as chancellor
           </p>
