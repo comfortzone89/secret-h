@@ -11,30 +11,13 @@ jobs:
 
     steps:
       # ----------------------------
-      # Checkout repository
+      # Checkout
       # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
       # ----------------------------
-      # Debug EB bundle files
-      # ----------------------------
-      - name: Debug EB bundle inputs
-        run: |
-          echo "===== Current working directory ====="
-          pwd
-
-          echo "===== List root files ====="
-          ls -la
-
-          echo "===== Dockerrun.aws.json contents ====="
-          cat Dockerrun.aws.json
-
-          echo "===== docker-compose.yml contents ====="
-          cat docker-compose.yml
-
-      # ----------------------------
-      # Docker setup
+      # Docker
       # ----------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -91,9 +74,9 @@ jobs:
       # ----------------------------
       # Prepare EB bundle
       # ----------------------------
-      - name: Package EB bundle
+      - name: Package EB file
         run: |
-          zip -j deploy.zip Dockerrun.aws.json docker-compose.yml
+          zip -r deploy.zip Dockerrun.aws.json docker-compose.yml
 
       # ----------------------------
       # Deploy to Elastic Beanstalk
@@ -104,7 +87,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: secret-h
-          environment_name: Secret-h-env
+          environment_name: secret-h-env
           version_label: ${{ github.sha }}
           region: us-east-1
           deployment_package: deploy.zip
