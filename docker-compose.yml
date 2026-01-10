@@ -2,40 +2,24 @@ version: "3.9"
 
 services:
   nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
-    container_name: nginx
+    image: shakenbake89/secret-h-nginx:latest
     ports:
-      - "80:80" # Local access via http://localhost
+      - "80:80"
     depends_on:
       - nextjs
       - socket
+    restart: always
 
   nextjs:
-    container_name: nextjs
     image: shakenbake89/secret-h-next:latest
     environment:
       NODE_ENV: production
-    depends_on:
-      - socket
+    restart: always
 
   socket:
-    container_name: socket
     image: shakenbake89/secret-h-socket:latest
     environment:
       NODE_ENV: production
       SOCKET_PORT: "3001"
-      REDIS_HOST: redis
-      REDIS_PORT: "6379"
-    depends_on:
-      - redis
-
-  redis:
-    container_name: redis
-    image: redis:7-alpine
-    volumes:
-      - redis-data:/data
-
-volumes:
-  redis-data:
+      # REDIS_HOST and REDIS_PORT are injected by Elastic Beanstalk
+    restart: always

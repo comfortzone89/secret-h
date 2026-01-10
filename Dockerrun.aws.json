@@ -1,22 +1,3 @@
 {
-  "AWSEBDockerrunVersion": 2,
-  "containerDefinitions": [
-    {
-      "name": "nginx",
-      "image": "shakenbake89/secret-h-nginx:latest",
-      "essential": true,
-      "portMappings": [{ "containerPort": 80, "hostPort": 80 }],
-      "links": ["next", "socket"]
-    },
-    {
-      "name": "next",
-      "image": "shakenbake89/secret-h-next:latest",
-      "essential": true
-    },
-    {
-      "name": "socket",
-      "image": "shakenbake89/secret-h-socket:latest",
-      "essential": true
-    }
-  ]
+  "AWSEBDockerrunVersion": 3
 }
