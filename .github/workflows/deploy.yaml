@@ -1,4 +1,4 @@
-name: Build & Push Docker Images
+name: Build, Push & Deploy to Elastic Beanstalk
 
 on:
   push:
@@ -6,13 +6,19 @@ on:
       - master
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # ----------------------------
+      # Checkout
+      # ----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ----------------------------
+      # Docker
+      # ----------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -23,7 +29,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # ----------------------------
-      # Build & push Next.js image
+      # Build & push images
       # ----------------------------
       - name: Build & push Next.js image
         uses: docker/build-push-action@v5
@@ -35,10 +41,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-next:${{ github.sha }}
 
-      # ----------------------------
-      # Build & push Socket image
-      # ----------------------------
-      - name: Build & push Socket server image
+      - name: Build & push Socket image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -48,9 +51,6 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-socket:${{ github.sha }}
 
-      # ----------------------------
-      # Build & push Nginx image
-      # ----------------------------
       - name: Build & push Nginx image
         uses: docker/build-push-action@v5
         with:
@@ -60,3 +60,34 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/secret-h-nginx:${{ github.sha }}
+
+      # ----------------------------
+      # AWS credentials
+      # ----------------------------
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+
+      # ----------------------------
+      # Prepare EB bundle
+      # ----------------------------
+      - name: Package Dockerrun file
+        run: |
+          zip -r deploy.zip Dockerrun.aws.json
+
+      # ----------------------------
+      # Deploy to Elastic Beanstalk
+      # ----------------------------
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: secret-h
+          environment_name: Secret-h-env
+          version_label: ${{ github.sha }}
+          region: us-east-1
+          deployment_package: deploy.zip
