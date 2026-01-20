@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: socket
+  namespace: secret-h
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: socket
+  template:
+    metadata:
+      labels:
+        app: socket
+    spec:
+      containers:
+        - name: socket
+          image: shakenbake89/secret-h-socket:latest
+          ports:
+            - containerPort: 3001
+          env:
+            - name: NODE_ENV
+              value: "production"
+
+            # CORS: MUST match public ingress origin
+            - name: FRONTEND_ORIGIN
+              value: "http://localhost"
+
+            # Redis
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: socket
+  namespace: secret-h
+spec:
+  type: ClusterIP
+  selector:
+    app: socket
+  ports:
+    - name: http
+      port: 3001
+      targetPort: 3001

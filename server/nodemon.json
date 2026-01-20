@@ -1,0 +1,5 @@
+{
+  "watch": ["*.ts", "lib/**/*.ts", "types/**/*.ts"],
+  "ext": "ts,json",
+  "exec": "node -r tsconfig-paths/register -r ts-node/register --loader ts-node/esm server.ts"
+}
