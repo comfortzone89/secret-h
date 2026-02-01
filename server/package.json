@@ -1,0 +1,20 @@
+{
+  "name": "secret-h-server",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc -p tsconfig.prod.json",
+    "start": "node ./dist/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,60 @@
+"use client";
+import { useGameStore } from "../../store/game";
+import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
+
+const DiscardPile: React.FC = () => {
+  const { gameInstance } = useGameStore();
+  const discardPileLength = gameInstance?.discardPile.length ?? 0;
+
+  const cards = Array.from({ length: discardPileLength }, (_, i) => ({
+    key: `discard-${i}`,
+    src: "/images/board-policy.png",
+    offset: `calc(24% + ${i * 0.6}vmin)`,
+    order: i, // bottom = 0, top = highest
+  }));
+
+  return (
+    <div className="relative w-[20vmin]">
+      <Image
+        src="/images/board-discard.png"
+        alt="Discard pile"
+        width={100}
+        height={300}
+        className="w-full"
+      />
+
+      <AnimatePresence>
+        {cards.map((card) => (
+          <motion.div
+            key={card.key}
+            className="absolute left-[50%] -translate-x-1/2 w-[65%]"
+            style={{ bottom: card.offset }}
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{
+              duration: 0.3,
+              delay: card.order * 0.05, // stagger by order
+            }}
+          >
+            <Image
+              src={card.src}
+              alt="Policy Card"
+              width={100}
+              height={300}
+              className="w-full"
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      <span className="absolute bottom-[5%] w-full text-center text-[3.5vmin]">
+        {discardPileLength}
+      </span>
+    </div>
+  );
+};
+
+export default DiscardPile;

@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  nginx:
+    image: shakenbake89/secret-h-nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - nextjs
+      - socket
+    restart: always
+
+  nextjs:
+    image: shakenbake89/secret-h-next:latest
+    environment:
+      NODE_ENV: production
+    restart: always
+
+  socket:
+    image: shakenbake89/secret-h-socket:latest
+    environment:
+      NODE_ENV: production
+      SOCKET_PORT: "3001"
+      # REDIS_HOST and REDIS_PORT are injected by Elastic Beanstalk
+    restart: always

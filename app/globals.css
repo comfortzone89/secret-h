@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --liberal: #5b9ba8;
+  --fascist: #df654c;
+  --disabledBg: #928079;
+  --disabledBoxShadow: 0 5px 0 #766058;
+  --buttonBoxShadow: 0 5px 0 #b4431a;
+  --inputBoxShadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+.liberal {
+  color: var(--liberal);
+}
+
+.fascist {
+  color: var(--fascist);
+}
+
+.shadow-theme {
+  box-shadow: var(--buttonBoxShadow);
+}
+
+main > .main-wrapper > *:not(.fixed, .status-banner) {
+  padding: 1.5rem;
+}
+
+.animate-flicker {
+  animation: animateflicker 1.2s linear infinite;
+}
+
+button:disabled,
+div:disabled {
+  background: var(--disabledBg);
+  box-shadow: var(--disabledBoxShadow);
+  cursor: not-allowed;
+}
+
+/* top-level and nested menus */
+/* .sub-menu {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+} */
+
+/* top-level menu opens when hovering the group (button + menu) */
+/* .menu-group:hover > .sub-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+} */
+
+/* make submenu appear to the right of parent item */
+.sub-menu li {
+  position: relative; /* parent for submenu */
+}
+
+/* .sub-menu li > .sub-menu {
+  top: 0;
+  left: 100%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+} */
+
+/* show submenu on hover of parent li */
+/* .sub-menu li:hover > .sub-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+} */
+
+.range-input {
+  --progress: calc(
+    (var(--value) - var(--min)) / (var(--max) - var(--min)) * 100%
+  );
+
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  margin: 4px 0;
+
+  /* Progress bar lives here */
+  background: linear-gradient(
+    to right,
+    #f59e0b 0%,
+    #f59e0b var(--progress),
+    #e5e7eb var(--progress),
+    #e5e7eb 100%
+  );
+}
+
+.range-input::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: transparent;
+}
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: #e17100;
+  margin-top: -5px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 8px !important;
+  color: white !important;
+  transition: 0.25s !important;
+}
+
+.swiper-button-disabled {
+  opacity: 0 !important;
+}
+
+.swiper {
+  overflow: visible !important;
+}
+
+.menu-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 18px;
+  width: 22px;
+}
+
+.menu-toggle .bar {
+  height: 2px;
+  width: 100%;
+  background-color: white;
+  transition: all 250ms ease-in-out;
+}
+
+.menu-toggle:hover {
+  cursor: pointer;
+}
+
+.x:nth-of-type(1) {
+  transition: all 250ms ease-in-out;
+  transform: rotate(45deg);
+  transform-origin: top left;
+  width: 24px;
+}
+
+.x:nth-of-type(2) {
+  transition: all 250ms ease-in-out;
+  transform-origin: center;
+  width: 0;
+}
+
+.x:nth-of-type(3) {
+  transition: all 250ms ease-in-out;
+  transform: rotate(-45deg);
+  transform-origin: bottom left;
+  width: 24px;
+}
+
+@keyframes animateflicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 767px) {
+  main > .main-wrapper > *:not(.fixed, .status-banner) {
+    padding: 1rem;
+  }
+}
