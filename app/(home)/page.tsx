@@ -20,7 +20,7 @@ import type {
   ReconnectResponse,
   CheckRoomResponse,
   AppPhase,
-} from "../../server/types";
+} from "../../server//lib/game/GameTypes";
 
 export default function Page() {
   /**

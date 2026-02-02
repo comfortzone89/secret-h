@@ -1,8 +1,10 @@
-import { Game } from "../lib/Game.js";
+import { BotController } from "../bots/BotController.js";
+import { Game } from "./Game.js";
 
-export type Party = "liberal" | "fascist";
-export type Role = "liberal" | "fascist" | "hitler";
-export type Policy = Party;
+export type Role = "LIBERAL" | "FASCIST" | "HITLER";
+export type Vote = "JA" | "NEIN" | null;
+export type Policy = "LIBERAL" | "FASCIST";
+
 export type Modal =
   | "role"
   | "nominate_chancellor"
@@ -21,7 +23,7 @@ export type Modal =
   | "vetoProposed"
   | "gameOver"
   | null;
-export type Vote = "yes" | "no" | null;
+
 export type View =
   | "home"
   | "createJoin"
@@ -41,6 +43,7 @@ export interface LobbyPlayer {
   permaId: string; // persistent identifier across reconnects
   name: string;
   connected: boolean;
+  isBot: boolean;
   portrait: string; // URL or path to portrait image
   modal?: string | null;
   modalConfirm?: boolean;
@@ -52,9 +55,10 @@ export interface Player {
   name: string;
   portrait: string; // URL or path to portrait image
   connected: boolean;
+  isBot: boolean;
   investigated?: boolean;
   index?: number;
-  party?: Party | undefined; // actual party membership (revealed by investigations)
+  party?: Policy | undefined; // actual party membership (revealed by investigations)
   role?: Role | undefined; // role (hitler/fascist/liberal) - NOT revealed by investigate
   alive?: boolean | undefined;
   vote?: Vote;
@@ -63,9 +67,11 @@ export interface Player {
   phase?: GamePhase;
   statusBanner?: StatusBanner;
   endTerm?: boolean;
+  bot?: BotController;
 }
 
 export type PlayerOrder = "random" | "manual";
+export type PlayAgainst = "humans" | "bots";
 
 export interface GameRoom {
   id: string;

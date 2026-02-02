@@ -1,4 +1,4 @@
-import { PlayerOrder } from "../types/index.js";
+import { PlayAgainst, PlayerOrder } from "../game/GameTypes.js";
 import { Room } from "./Room.js";
 
 export class RoomManager {
@@ -16,6 +16,7 @@ export class RoomManager {
     id: string;
     hostId: string;
     maxPlayers: number;
+    playAgainst: PlayAgainst;
     playerOrder: PlayerOrder;
   }): Room {
     if (this.rooms.has(data.id)) {
@@ -25,6 +26,7 @@ export class RoomManager {
     const room = new Room({
       id: data.id,
       hostId: data.hostId,
+      playAgainst: data.playAgainst,
       maxPlayers: data.maxPlayers,
       playerOrder: data.playerOrder,
     });

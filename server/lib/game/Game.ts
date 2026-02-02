@@ -1,6 +1,6 @@
 // lib/game/Game
 // runtime values (must exist at runtime)
-import { powersTableFor } from "../helpers/index.js";
+import { powersTableFor } from "../../helpers/index.js";
 
 // type-only imports (erased at runtime)
 import type {
@@ -12,9 +12,10 @@ import type {
   Policy,
   StatusBanner,
   Vote,
-  Party,
   WinReason,
-} from "../types/index.js";
+  PlayAgainst,
+  Role,
+} from "../../lib/game/GameTypes.js";
 
 /* ---------- Game class ---------- */
 
@@ -32,6 +33,7 @@ export class Game {
   presidentialPower: ExecutivePowerName = null;
   presidentInvestigation: number | null = null;
   lastExecutedPlayer: number | null = null;
+  playAgainst: PlayAgainst;
 
   /* Tracks */
   liberalPolicies = 0; // 0..5
@@ -54,7 +56,7 @@ export class Game {
   specialElectionNextPresidentId: number | null = null;
   previousPresidentialOrder: number | null = null;
   failedToElectGovernment: boolean = false;
-  gameWon: Party | null = null;
+  gameWon: Policy | null = null;
   winReason: WinReason = null;
   playerLeft: boolean = false;
 
@@ -69,9 +71,10 @@ export class Game {
   presidentExecutedPlayer: boolean = false;
   presidentInvestigatedPlayer: boolean = false;
 
-  constructor(id: string, hostId: string) {
+  constructor(id: string, hostId: string, playAgainst: PlayAgainst) {
     this.id = id;
     this.hostId = hostId;
+    this.playAgainst = playAgainst;
   }
 
   addPlayers(players: Player[]) {
@@ -84,7 +87,6 @@ export class Game {
         name: player.name,
         portrait: player.portrait,
         index: this.players.length,
-
         role: undefined,
         party: undefined,
         alive: true,
@@ -96,6 +98,7 @@ export class Game {
         endTerm: false,
         connected: player.connected,
         investigated: false,
+        isBot: player.isBot,
       });
     });
   }
@@ -130,8 +133,8 @@ export class Game {
   /** Create standard 17-card deck (11 fascist, 6 liberal) and shuffle */
   resetFullDeckAndShuffle() {
     this.drawPile = [
-      ...Array<Policy>(11).fill("fascist"),
-      ...Array<Policy>(6).fill("liberal"),
+      ...Array<Policy>(11).fill("FASCIST"),
+      ...Array<Policy>(6).fill("LIBERAL"),
     ];
     this.shuffleInPlace(this.drawPile);
     this.discardPile = [];
@@ -226,21 +229,21 @@ export class Game {
 
     // Create an array of roles
     const roles: {
-      role: "hitler" | "fascist" | "liberal";
-      party: "fascist" | "liberal";
+      role: Role;
+      party: Policy;
     }[] = [];
 
     // Add Hitler
-    roles.push({ role: "hitler", party: "fascist" });
+    roles.push({ role: "HITLER", party: "FASCIST" });
 
     // Add remaining fascists
     for (let i = 1; i < totalFascists; i++) {
-      roles.push({ role: "fascist", party: "fascist" });
+      roles.push({ role: "FASCIST", party: "FASCIST" });
     }
 
     // Add liberals
     while (roles.length < total) {
-      roles.push({ role: "liberal", party: "liberal" });
+      roles.push({ role: "LIBERAL", party: "LIBERAL" });
     }
 
     // Shuffle roles
@@ -379,7 +382,7 @@ export class Game {
 
   enactPolicy(policy: Policy) {
     this.enactedPolicies = [...this.enactedPolicies, policy];
-    if (policy === "liberal") {
+    if (policy === "LIBERAL") {
       this.liberalPolicies++;
     } else {
       this.fascistPolicies++;
@@ -423,7 +426,9 @@ export class Game {
 
   checkModalConfirm(): boolean {
     const alivePlayers = this.players.filter((p) => p.alive);
-    const allConfirmed = alivePlayers.every((p) => p.modalConfirm !== false);
+    const allConfirmed =
+      this.playAgainst === "bots" ||
+      alivePlayers.every((p) => p.modalConfirm !== false);
     return allConfirmed;
   }
 
@@ -510,8 +515,8 @@ export class Game {
     const alivePlayers = this.players.filter((p) => p.alive);
     const allVoted = alivePlayers.every((p) => p.vote !== null);
     if (allVoted) {
-      const yesVotes = this.players.filter((p) => p.vote === "yes").length;
-      const noVotes = this.players.filter((p) => p.vote === "no").length;
+      const yesVotes = this.players.filter((p) => p.vote === "JA").length;
+      const noVotes = this.players.filter((p) => p.vote === "NEIN").length;
       this.showVotes = true;
       this.setStatusBannerAll(
         `${yesVotes} - ${noVotes}: Vote ${
@@ -562,7 +567,7 @@ export class Game {
     if (
       presidentialAction &&
       presidentialAction?.power !== null &&
-      this.enactedPolicies[this.enactedPolicies.length - 1] === "fascist"
+      this.enactedPolicies[this.enactedPolicies.length - 1] === "FASCIST"
     ) {
       this.setPhase(playerIndex, "presidential_power");
       if (this.currentPresidentIndex === playerIndex) {
@@ -755,22 +760,22 @@ export class Game {
   checkWin(justPassedPolicy = false): boolean {
     if (this.liberalPolicies >= 5) {
       this.setModalAll("gameOver");
-      this.gameWon = "liberal";
+      this.gameWon = "LIBERAL";
       this.winReason = "policy";
       return true;
     }
 
     if (this.fascistPolicies >= 6) {
       this.setModalAll("gameOver");
-      this.gameWon = "fascist";
+      this.gameWon = "FASCIST";
       this.winReason = "policy";
       return true;
     }
 
-    const hitler = this.players.find((p) => p.role === "hitler");
+    const hitler = this.players.find((p) => p.role === "HITLER");
     if (hitler && !hitler.alive) {
       this.setModalAll("gameOver");
-      this.gameWon = "liberal";
+      this.gameWon = "LIBERAL";
       this.winReason = "hitlerExecuted";
       return true;
     }
@@ -779,10 +784,10 @@ export class Game {
     if (!justPassedPolicy) {
       if (
         this.fascistPolicies >= 3 &&
-        this.players[this.currentChancellorIndex!].role === "hitler"
+        this.players[this.currentChancellorIndex!].role === "HITLER"
       ) {
         this.setModalAll("gameOver");
-        this.gameWon = "fascist";
+        this.gameWon = "FASCIST";
         this.winReason = "hitlerElected";
         return true;
       }

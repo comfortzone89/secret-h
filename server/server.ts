@@ -8,10 +8,10 @@ const __dirname = path.dirname(__filename);
 import http from "http";
 import { Server, Socket } from "socket.io";
 
-import { RoomManager } from "./lib/RoomManager.js";
-import { Room } from "./lib/Room.js";
-import { Game } from "./lib/Game.js";
-import type { LobbyPlayer } from "./types/index.js";
+import { RoomManager } from "./lib/room/RoomManager.js";
+import { Room } from "./lib/room/Room.js";
+import { Game } from "./lib/game/Game.js";
+import { LobbyPlayer } from "./lib/game/GameTypes.js";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -85,7 +85,10 @@ io.on("connection", (socket: Socket) => {
   ----------------------------- */
   socket.on(
     "create_game",
-    ({ name, maxPlayers, portrait, playerOrder, roomId }, callback) => {
+    (
+      { name, maxPlayers, portrait, playAgainst, playerOrder, roomId },
+      callback
+    ) => {
       if (roomManager.exists(roomId)) {
         return callback({ error: "Game name already exists." });
       }
@@ -94,6 +97,7 @@ io.on("connection", (socket: Socket) => {
         id: roomId,
         hostId: socket.id,
         maxPlayers,
+        playAgainst,
         playerOrder,
       });
 
@@ -106,13 +110,33 @@ io.on("connection", (socket: Socket) => {
           name,
           portrait,
           connected: true,
+          isBot: false,
         },
       ]);
+
+      if (playAgainst === "bots") {
+        const botPlayers = Array.from(
+          { length: maxPlayers - 1 },
+          (_, index) => ({
+            id: `bot${index + 1}`,
+            permaId: `bot${index + 1}`,
+            name: `Bot ${index + 1}`,
+            portrait: "/images/player-portraits/player-portrait-0.svg",
+            connected: true,
+            isBot: true,
+          })
+        );
+        game.addPlayers(botPlayers);
+      }
 
       socket.join(room.id);
       socket.data.roomId = room.id;
 
       callback({ roomId: room.id, game: game });
+
+      if (playAgainst === "bots") {
+        return startGameInRoom(room);
+      }
 
       emitLobbyUpdate(room);
     }
@@ -158,6 +182,7 @@ io.on("connection", (socket: Socket) => {
         name,
         portrait,
         connected: true,
+        isBot: false,
       };
 
       if (player) {
@@ -326,15 +351,19 @@ io.on("connection", (socket: Socket) => {
   // SELECT CHANCELLOR
   socket.on(
     "handleNominateChancellorModalClose",
-    ({ roomId, chancellorId }) => {
+    ({ roomId, chancellorId, bot }) => {
       const room = roomManager.get(roomId);
       if (!room || !room.game) return;
 
-      // Ensure this player is the current president
-      const president = room.game.players[room.game.currentPresidentIndex!];
-      if (president.id !== socket.id) {
-        console.warn("Non-president tried to select chancellor:", socket.id);
-        return;
+      if (bot) {
+        //
+      } else {
+        // Ensure this player is the current president
+        const president = room.game.players[room.game.currentPresidentIndex!];
+        if (president.id !== socket.id) {
+          console.warn("Non-president tried to select chancellor:", socket.id);
+          return;
+        }
       }
 
       room.game.handleNominateChancellorModalClose(chancellorId);
@@ -502,7 +531,7 @@ io.on("connection", (socket: Socket) => {
 
     if (action === "restart") {
       const players = room.game.players;
-      room.game = new Game(roomId, room.hostId);
+      room.game = new Game(roomId, room.hostId, room.playAgainst);
 
       room.game.addPlayers(players);
       if (room.playerOrder === "manual") {

@@ -1,5 +1,5 @@
+import { Player } from "@/server/lib/game/GameTypes";
 import { useGameStore } from "../../store/game";
-import { Player } from "../../server/types";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
@@ -28,13 +28,13 @@ const GameStatus: React.FC = () => {
     return players.reduce(
       (acc, player) => {
         switch (player.role) {
-          case "liberal":
+          case "LIBERAL":
             acc.liberal++;
             break;
-          case "fascist":
+          case "FASCIST":
             acc.fascist++;
             break;
-          case "hitler":
+          case "HITLER":
             acc.hitler++;
             break;
         }

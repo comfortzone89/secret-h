@@ -4,9 +4,9 @@ import Image from "next/image";
 import Button from "../templates/Button";
 import PlayerContainer from "../templates/PlayerContainer";
 import { useGameStore } from "../../store/game";
-import { Vote } from "../../server/types";
 import clsx from "clsx";
 import { VOTING_MODAL_H, VOTING_MODAL_P1 } from "../../constants";
+import { Vote } from "@/server/lib/game/GameTypes";
 
 const VotingModal: React.FC = () => {
   const { gameInstance, handleVoteModalClose } = useGameStore();
@@ -20,7 +20,7 @@ const VotingModal: React.FC = () => {
   if (presidentIndex === null || gameInstance === null) return;
   const presidentName = gameInstance?.players[presidentIndex!].name;
 
-  const buttons = ["yes", "no"];
+  const buttons = ["JA", "NEIN"];
 
   return (
     <Modal modal="voting" className="bg-black">

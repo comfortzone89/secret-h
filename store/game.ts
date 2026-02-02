@@ -1,7 +1,13 @@
 import { create } from "zustand";
 import { socket } from "../socket/socket";
-import { Player, PlayerOrder, View, Vote } from "../server/types/index";
-import { Game } from "../server/lib/Game";
+import {
+  PlayAgainst,
+  Player,
+  PlayerOrder,
+  View,
+  Vote,
+} from "../server/lib/game/GameTypes";
+import { Game } from "../server/lib/game/Game";
 import { DEFAULT_PORTRAIT } from "../constants";
 import { toast, ToastOptions, Bounce } from "react-toastify";
 
@@ -31,6 +37,7 @@ interface GameState {
   gameInstance: Game | null;
   maxPlayers: number;
   playerOrder: PlayerOrder;
+  playAgainst: PlayAgainst;
   isMinimized: boolean;
   playersView: number; // Used as a number simply to re-render the Players.tsx component since I'm storing the information in localStorage
   trackerView: number; // Used as a number simply to re-render the Players.tsx component since I'm storing the information in localStorage
@@ -59,6 +66,7 @@ interface GameState {
   getPlayerIndex: () => number | null;
   setPlayerIndex: (playerIndex: number) => void;
   setPlayerOrder: (playerOrder: GameState["playerOrder"]) => void;
+  setPlayAgainst: (playAgainst: GameState["playAgainst"]) => void;
   setIsMinimized: (isMinimized: boolean) => void;
   setPlayersView: (playersView: number) => void;
   setTrackerView: (trackerView: number) => void;
@@ -101,6 +109,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   gameInstance: null,
   maxPlayers: 5,
   playerOrder: "random",
+  playAgainst: "humans",
   isMinimized: false,
   playersView: 0,
   trackerView: 0,
@@ -129,6 +138,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   setGameInstance: (gameInstance) => set({ gameInstance }),
   setMaxPlayers: (count) => set({ maxPlayers: count }),
   setPlayerOrder: (playerOrder) => set({ playerOrder }),
+  setPlayAgainst: (playAgainst) => set({ playAgainst }),
   setIsMinimized: (isMinimized) => set({ isMinimized }),
   setPlayersView: (playersView) => set({ playersView }),
   setTrackerView: (trackerView) => set({ trackerView }),
@@ -344,6 +354,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       maxPlayers,
       roomId,
       selectedPortrait,
+      playAgainst,
       playerOrder,
       setRoomId,
       setView,
@@ -363,7 +374,14 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
       socket.emit(
         "create_game",
-        { name, maxPlayers, portrait: selectedPortrait, playerOrder, roomId },
+        {
+          name,
+          maxPlayers,
+          portrait: selectedPortrait,
+          playAgainst,
+          playerOrder,
+          roomId,
+        },
         ({ roomId, error }: { roomId: string; error?: string }) => {
           if (error) {
             return toast.error(error, errorToastOptions);

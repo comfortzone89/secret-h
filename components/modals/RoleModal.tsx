@@ -23,9 +23,9 @@ const RoleModal: React.FC = () => {
 
   const role = me?.role;
   const imageName =
-    role === "hitler"
+    role === "HITLER"
       ? role
-      : role === "liberal"
+      : role === "LIBERAL"
       ? role + "-" + (Math.floor(Math.random() * 6) + 1)
       : role + "-" + (Math.floor(Math.random() * 3) + 1);
 
@@ -43,23 +43,23 @@ const RoleModal: React.FC = () => {
         />
         <div className="mb-4">
           <p className="mb-4">
-            {role === "liberal"
+            {role === "LIBERAL"
               ? ROLE_MODAL_LIBERAL_P1
-              : role === "fascist"
+              : role === "FASCIST"
               ? ROLE_MODAL_FASCIST_P1
               : ROLE_MODAL_HITLER_P1}
           </p>
           <p className="mb-4">
-            {role === "liberal"
+            {role === "LIBERAL"
               ? ROLE_MODAL_LIBERAL_P2
-              : role === "fascist"
+              : role === "FASCIST"
               ? ROLE_MODAL_FASCIST_P2
               : ROLE_MODAL_HITLER_P2}
           </p>
           <p>
-            {role === "liberal"
+            {role === "LIBERAL"
               ? ROLE_MODAL_LIBERAL_P3
-              : role === "fascist"
+              : role === "FASCIST"
               ? ROLE_MODAL_FASCIST_P3
               : ROLE_MODAL_HITLER_P3}
           </p>

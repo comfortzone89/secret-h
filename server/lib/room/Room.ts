@@ -1,10 +1,11 @@
-import { Game } from "./Game.js";
-import { PlayerOrder } from "../types/index.js";
+import { Game } from "../game/Game.js";
+import { PlayAgainst, PlayerOrder } from "../game/GameTypes.js";
 
 export class Room {
   readonly id: string;
   hostId: string;
   maxPlayers: number;
+  playAgainst: PlayAgainst;
   playerOrder: PlayerOrder;
   game: Game;
   deleteTimeout: NodeJS.Timeout | null = null;
@@ -13,20 +14,23 @@ export class Room {
     id,
     hostId,
     maxPlayers,
+    playAgainst,
     playerOrder,
   }: {
     id: string;
     hostId: string;
     maxPlayers: number;
+    playAgainst: PlayAgainst;
     playerOrder: PlayerOrder;
   }) {
     this.id = id;
     this.hostId = hostId;
     this.maxPlayers = maxPlayers;
+    this.playAgainst = playAgainst;
     this.playerOrder = playerOrder;
 
     // Game exists immediately
-    this.game = new Game(id, hostId);
+    this.game = new Game(id, hostId, playAgainst);
   }
 
   /* ---------- derived ---------- */

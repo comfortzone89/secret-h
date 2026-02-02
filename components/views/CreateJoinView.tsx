@@ -17,12 +17,14 @@ export default function CreateJoinView() {
     selectedPortrait,
     name,
     maxPlayers,
+    playAgainst,
     setRoomId,
     setName,
     setIsModalOpen,
     setMaxPlayers,
     handleGameSubmit,
     setPlayerOrder,
+    // setPlayAgainst,
     setView,
   } = useGameStore();
 
@@ -112,16 +114,28 @@ export default function CreateJoinView() {
             ))}
           </datalist> */}
 
-          <div className="flex items-center justify-between mt-3">
-            <span className="text-sm font-medium mr-2">Player order: </span>
+          {/* <div className="flex items-center mt-3">
+            <span className="text-sm font-medium mr-2">Play against: </span>
 
             <Checkbox
-              labels={{ off: "Random", on: "Manual" }}
+              labels={{ off: "Humans", on: "Bots" }}
               onChange={(checked) =>
-                setPlayerOrder(checked ? "manual" : "random")
+                setPlayAgainst(checked ? "bots" : "humans")
               }
             />
-          </div>
+          </div> */}
+          {playAgainst !== "bots" && (
+            <div className="flex items-center mt-3">
+              <span className="text-sm font-medium mr-2">Player order: </span>
+
+              <Checkbox
+                labels={{ off: "Random", on: "Manual" }}
+                onChange={(checked) =>
+                  setPlayerOrder(checked ? "manual" : "random")
+                }
+              />
+            </div>
+          )}
         </div>
       )}
 

@@ -7,7 +7,7 @@ import { useGameStore } from "../../store/game";
 import Button from "../../components/templates/Button";
 import { Copy } from "lucide-react";
 import PlayerContainer from "../templates/PlayerContainer";
-import { Game } from "@/server/lib/Game";
+import { Game } from "@/server/lib/game/Game";
 
 export default function LobbyView() {
   const {

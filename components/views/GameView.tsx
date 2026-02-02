@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Game } from "../../server/lib/Game";
-import { Player, View } from "../../server/types";
+import { Game } from "../../server/lib/game/Game";
 import { socket } from "../../socket/socket";
 import { useGameStore } from "../../store/game";
 
@@ -32,6 +31,7 @@ import VetoUnlockedModal from "../modals/VetoUnlockedModal";
 import ProposeVetoModal from "../modals/ProposeVetoModal";
 import GameOverModal from "../modals/GameOverModal";
 import ShowAffiliationModal from "../modals/ShowAffiliationModal";
+import { Player, View } from "@/server/lib/game/GameTypes";
 
 export default function GameView() {
   const {
@@ -83,8 +83,8 @@ export default function GameView() {
   }
 
   const me = getMe();
-  // console.log("GAME INSTANCE:", gameInstance);
-  // console.log("ME:", me);
+  console.log("GAME INSTANCE:", gameInstance);
+  console.log("ME:", me);
 
   if (!me) {
     return <p>Finding player info...</p>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppPhase } from "@/server/types";
+import { AppPhase } from "@/server/lib/game/GameTypes";
 import { socket } from "@/socket/socket";
 import { useEffect } from "react";
 
@@ -15,7 +15,7 @@ export default function DisconnectedView({ setPhase }: DisconnectedViewProps) {
   }, [setPhase]);
 
   return (
-    <div className="flex flex-col items-center justify-center text-center h-full space-y-6 p-4">
+    <div className="flex flex-col items-center justify-center text-center h-full space-y-6 p-4 mt-[35vh]">
       <p>You have been disconnected. Reconnecting...</p>
       <p>
         If you don&apos;t get reconnected in less than 10 seconds, you might

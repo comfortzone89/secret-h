@@ -1,9 +1,9 @@
 import Image from "next/image";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
-import { Player, Vote } from "../../server/types";
 import { useGameStore } from "../../store/game";
 import { useState } from "react";
+import { Player, Vote } from "@/server/lib/game/GameTypes";
 
 interface PlayerContainerProps {
   player?: Player; // after initialized
@@ -82,11 +82,11 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
     if (me) {
       if (me.id === player.id) {
         canSeeRole = true;
-      } else if (me.role === "fascist") {
-        canSeeRole = player.role === "fascist" || player.role === "hitler";
-      } else if (me.role === "hitler") {
+      } else if (me.role === "FASCIST") {
+        canSeeRole = player.role === "FASCIST" || player.role === "HITLER";
+      } else if (me.role === "HITLER") {
         if (maxPlayers <= 6) {
-          canSeeRole = player.role === "fascist";
+          canSeeRole = player.role === "FASCIST";
         }
       }
     }
@@ -174,9 +174,9 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
             "President"}
         </p>
         <AnimatePresence>
-          {vote === "yes" && showVotes && (
+          {vote === "JA" && showVotes && (
             <motion.div
-              key={`yes-${index}`}
+              key={`JA-${index}`}
               custom={index}
               variants={voteVariants}
               initial="hidden"
@@ -193,9 +193,9 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
             </motion.div>
           )}
 
-          {vote === "no" && showVotes && (
+          {vote === "NEIN" && showVotes && (
             <motion.div
-              key={`no-${index}`}
+              key={`NEIN-${index}`}
               custom={index}
               variants={voteVariants}
               initial="hidden"
@@ -250,8 +250,8 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
             />
             <p
               className={clsx("capitalize text-[3cqw] md:text-[1cqw]", {
-                liberal: player.role === "liberal",
-                fascist: player.role === "fascist" || player.role === "hitler",
+                liberal: player.role === "LIBERAL",
+                fascist: player.role === "FASCIST" || player.role === "HITLER",
               })}
             >
               {player.role}

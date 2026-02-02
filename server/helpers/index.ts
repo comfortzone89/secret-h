@@ -1,4 +1,4 @@
-import type { ExecutivePowerName, MilestoneInfo } from "../types/index.js";
+import { ExecutivePowerName, MilestoneInfo } from "../lib/game/GameTypes.js";
 
 export function getRoomIdFromUrl() {
   return new URLSearchParams(window.location.search).get("roomId");

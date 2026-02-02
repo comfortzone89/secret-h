@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    retention-days: 1
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
@@ -42,7 +43,7 @@ jobs:
       # Login to ECR
       # ----------------------------
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       # ----------------------------
       # Build & push Docker images with SHA tag

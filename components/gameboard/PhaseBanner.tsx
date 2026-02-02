@@ -6,17 +6,19 @@ import { socket } from "../../socket/socket";
 import { useGameStore } from "../../store/game";
 
 const PhaseBanner: React.FC = () => {
-  const { gameInstance, playerId, getMe } = useGameStore();
+  const { gameInstance, playerId, playAgainst, getMe, getPlayers } =
+    useGameStore();
   const me = getMe();
   const playerIndex = me?.index;
   const currentPhase = me?.phase;
   const permaId = me?.permaId;
+  const players = getPlayers();
 
   const [show, setShow] = useState(false);
   const [phaseText, setPhaseText] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!currentPhase) return;
+    if (!currentPhase || !players || !gameInstance) return;
 
     setPhaseText(currentPhase);
     setShow(true);
@@ -38,6 +40,23 @@ const PhaseBanner: React.FC = () => {
             playerId,
             modal: "nominate_chancellor",
           });
+        } else if (me?.phase === "nomination" && playAgainst === "bots") {
+          if (gameInstance?.currentPresidentIndex !== me?.index) {
+            const currentPresident = players.find(
+              (player) => player.index === gameInstance.currentPresidentIndex
+            );
+            socket.emit("handleNominateChancellorModalClose", {
+              roomId: gameInstance.id,
+              bot: currentPresident,
+            });
+          } else {
+            socket.emit("setModal", {
+              roomId: gameInstance?.id,
+              playerIndex,
+              playerId,
+              modal: "nominate_chancellor",
+            });
+          }
         } else if (me?.phase === "nomination") {
           socket.emit("setStatusBanner", {
             roomId: gameInstance?.id,
