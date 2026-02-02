@@ -21,21 +21,18 @@ FROM node:20-alpine AS runner
 WORKDIR /app/server
 ENV NODE_ENV=production
 
-# Create a non-root user
-RUN addgroup -g 1000 app && adduser -D -G app -u 1000 app
-
 # Copy compiled output
 COPY --from=builder /app/server/dist ./dist
 COPY --from=builder /app/server/node_modules ./node_modules
 COPY --from=builder /app/server/package.json ./
 
-# Set permissions for non-root user
-RUN chown -R app:app /app/server
+# Ensure the node user owns the app folder
+RUN chown -R node:node /app/server
 
-# Run as non-root
-USER app
+# Run as node (UID 1000)
+USER node
 
-# Expose socket server port
+# Expose socket server port internally
 EXPOSE 3001
 
 # Run the compiled server
