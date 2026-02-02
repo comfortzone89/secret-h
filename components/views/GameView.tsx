@@ -83,8 +83,8 @@ export default function GameView() {
   }
 
   const me = getMe();
-  console.log("GAME INSTANCE:", gameInstance);
-  console.log("ME:", me);
+  // console.log("GAME INSTANCE:", gameInstance);
+  // console.log("ME:", me);
 
   if (!me) {
     return <p>Finding player info...</p>;
