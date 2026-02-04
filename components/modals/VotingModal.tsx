@@ -20,7 +20,7 @@ const VotingModal: React.FC = () => {
   if (presidentIndex === null || gameInstance === null) return;
   const presidentName = gameInstance?.players[presidentIndex!].name;
 
-  const buttons = ["JA", "NEIN"];
+  const buttons = ["yes", "no"];
 
   return (
     <Modal modal="voting" className="bg-black">
@@ -44,7 +44,7 @@ const VotingModal: React.FC = () => {
             key={value}
             className={clsx(
               "rounded-xl p-1 cursor-pointer transition-all",
-              selectedVote === value ? "bg-amber-500" : ""
+              selectedVote === value ? "bg-amber-500" : "",
             )}
             onClick={() => setSelectedVote(value as Vote)}
             value={value}

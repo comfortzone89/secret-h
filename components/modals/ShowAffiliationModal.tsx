@@ -9,7 +9,7 @@ const ShowAffiliationModal: React.FC = () => {
   const { getMe, handleShowAffiliationModal } = useGameStore();
   const me = getMe();
   const role = me?.role;
-  const roleName = role === "HITLER" ? "FASCIST" : role;
+  const roleName = role === "hitler" ? "fascist" : role;
 
   return (
     <Modal

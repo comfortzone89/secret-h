@@ -7,57 +7,138 @@ export class CautiousLiberal implements BotBehavior {
 
   decide(context: BotActionContext, memory: BotMemory): BotDecision {
     switch (context.type) {
-      case "VOTE_GOVERNMENT": {
-        const president = memory.players.get(context.presidentId);
-        const chancellor = memory.players.get(context.chancellorId);
-        if (!president || !chancellor) return { type: "VOTE", vote: "NEIN" };
+      case "VOTE_GOVERNMENT":
+        return this.voteGovernment(context, memory);
 
-        // Vote yes only if both have low suspicion
-        if (president.suspicion < 40 && chancellor.suspicion < 40) {
-          return { type: "VOTE", vote: "JA" };
-        } else {
-          return { type: "VOTE", vote: "NEIN" };
-        }
-      }
+      case "NOMINATE_CHANCELLOR":
+        return this.nominateChancellor(context, memory);
 
-      case "NOMINATE_CHANCELLOR": {
-        // Pick the eligible player with lowest suspicion
-        let best = context.eligiblePlayers[0];
-        let minSuspicion = memory.players.get(best)?.suspicion ?? 100;
+      case "DISCARD_POLICY":
+        return this.discardPolicy(context);
 
-        for (const playerId of context.eligiblePlayers) {
-          const s = memory.players.get(playerId)?.suspicion ?? 100;
-          if (s < minSuspicion) {
-            best = playerId;
-            minSuspicion = s;
-          }
-        }
+      case "EXECUTE_PLAYER":
+        return this.executePlayer(context, memory);
 
-        return { type: "NOMINATE", playerId: best };
-      }
+      case "CLAIM_POLICIES":
+        return this.claimPolicies(context);
 
-      case "DISCARD_POLICY": {
-        // Liberal: discard FASCIST if possible
-        const fascistIndex = context.policies.indexOf("FASCIST");
-        if (fascistIndex >= 0) {
-          return { type: "DISCARD", policy: "FASCIST" };
-        } else {
-          return { type: "DISCARD", policy: context.policies[0] };
-        }
-      }
+      default:
+        throw new Error("Unhandled BotActionContext");
+    }
+  }
 
-      case "EXECUTE_PLAYER": {
-        // Conservative: do not execute anyone
-        return { type: "EXECUTE", playerId: context.eligiblePlayers[0] };
-      }
+  // ------------------------
+  // Voting
+  // ------------------------
 
-      case "CLAIM_POLICIES": {
-        // Always truthful for liberal
-        return {
-          type: "CLAIM",
-          claim: { type: "POLICY_DRAW", data: context.actualPolicies },
-        };
+  private voteGovernment(
+    context: Extract<BotActionContext, { type: "VOTE_GOVERNMENT" }>,
+    memory: BotMemory,
+  ): BotDecision {
+    const { presidentId, chancellorId } = context;
+
+    const president = memory.players.get(presidentId);
+    const chancellor = memory.players.get(chancellorId);
+
+    if (!president || !chancellor) {
+      return { type: "VOTE", vote: "no" };
+    }
+
+    // Prefer governments with low suspicion fascists / Hitler
+    const score =
+      -president.suspicion -
+      chancellor.suspicion +
+      memory.gameState.fascistPolicies * 5;
+
+    return { type: "VOTE", vote: score > 0 ? "yes" : "no" };
+  }
+
+  // ------------------------
+  // Nomination
+  // ------------------------
+
+  private nominateChancellor(
+    context: Extract<BotActionContext, { type: "NOMINATE_CHANCELLOR" }>,
+    memory: BotMemory,
+  ): BotDecision {
+    let bestCandidate = context.eligiblePlayers[0];
+    let bestScore = -Infinity;
+    console.log("MEMORY", memory);
+    console.log("BEST CANDIDATE BEFORE", bestCandidate);
+    for (const id of context.eligiblePlayers) {
+      const p = memory.players.get(id);
+      if (!p) continue;
+
+      // Prefer trusted / low-suspicion players
+      let score = -p.suspicion + p.trust;
+
+      // Late game aggression
+      score += memory.gameState.fascistPolicies * 3;
+      console.log("SCORE", score);
+      if (score > bestScore) {
+        bestScore = score;
+        bestCandidate = id;
       }
     }
+
+    console.log("BEST CANDIDATE AFTER", bestCandidate);
+    return { type: "NOMINATE", playerId: bestCandidate };
+  }
+
+  // ------------------------
+  // Policy Discard
+  // ------------------------
+
+  private discardPolicy(
+    context: Extract<BotActionContext, { type: "DISCARD_POLICY" }>,
+  ): BotDecision {
+    // Fascist always keeps fascist policy if possible
+    const fascistIndex = context.policies.indexOf("fascist");
+    if (fascistIndex >= 0) {
+      return { type: "DISCARD", policy: "liberal" };
+    }
+
+    return { type: "DISCARD", policy: context.policies[0] };
+  }
+
+  // ------------------------
+  // Execution
+  // ------------------------
+
+  private executePlayer(
+    context: Extract<BotActionContext, { type: "EXECUTE_PLAYER" }>,
+    memory: BotMemory,
+  ): BotDecision {
+    // Kill highest suspicion non-fascist-looking player
+    let target = context.eligiblePlayers[0];
+    let highestSuspicion = -Infinity;
+
+    for (const id of context.eligiblePlayers) {
+      const p = memory.players.get(id);
+      if (!p) continue;
+
+      if (p.suspicion > highestSuspicion) {
+        highestSuspicion = p.suspicion;
+        target = id;
+      }
+    }
+
+    return { type: "EXECUTE", playerId: target };
+  }
+
+  // ------------------------
+  // Claims
+  // ------------------------
+
+  private claimPolicies(
+    context: Extract<BotActionContext, { type: "CLAIM_POLICIES" }>,
+  ): BotDecision {
+    return {
+      type: "CLAIM",
+      claim: {
+        type: "POLICY_DRAW",
+        data: context.actualPolicies,
+      },
+    };
   }
 }

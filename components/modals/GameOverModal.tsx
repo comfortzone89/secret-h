@@ -16,8 +16,8 @@ const GameOverModal: React.FC = () => {
   if (partyWon === null || partyWon === undefined) return;
   const winReason = gameInstance?.winReason;
 
-  const fascists = players?.filter((p) => p.party === "FASCIST");
-  const liberals = players?.filter((p) => p.party === "LIBERAL");
+  const fascists = players?.filter((p) => p.party === "fascist");
+  const liberals = players?.filter((p) => p.party === "liberal");
 
   return (
     <Modal
@@ -64,7 +64,7 @@ const GameOverModal: React.FC = () => {
             handleGameOverModalClose(
               gameInstance?.hostId === me?.permaId && !gameInstance?.playerLeft
                 ? "restart"
-                : "lobby"
+                : "lobby",
             )
           }
         >

@@ -23,11 +23,11 @@ const RoleModal: React.FC = () => {
 
   const role = me?.role;
   const imageName =
-    role === "HITLER"
+    role === "hitler"
       ? role
-      : role === "LIBERAL"
-      ? role + "-" + (Math.floor(Math.random() * 6) + 1)
-      : role + "-" + (Math.floor(Math.random() * 3) + 1);
+      : role === "liberal"
+        ? role + "-" + (Math.floor(Math.random() * 6) + 1)
+        : role + "-" + (Math.floor(Math.random() * 3) + 1);
 
   return (
     <Modal modal="role" className="bg-black" allowMinimize={false}>
@@ -43,25 +43,25 @@ const RoleModal: React.FC = () => {
         />
         <div className="mb-4">
           <p className="mb-4">
-            {role === "LIBERAL"
+            {role === "liberal"
               ? ROLE_MODAL_LIBERAL_P1
-              : role === "FASCIST"
-              ? ROLE_MODAL_FASCIST_P1
-              : ROLE_MODAL_HITLER_P1}
+              : role === "fascist"
+                ? ROLE_MODAL_FASCIST_P1
+                : ROLE_MODAL_HITLER_P1}
           </p>
           <p className="mb-4">
-            {role === "LIBERAL"
+            {role === "liberal"
               ? ROLE_MODAL_LIBERAL_P2
-              : role === "FASCIST"
-              ? ROLE_MODAL_FASCIST_P2
-              : ROLE_MODAL_HITLER_P2}
+              : role === "fascist"
+                ? ROLE_MODAL_FASCIST_P2
+                : ROLE_MODAL_HITLER_P2}
           </p>
           <p>
-            {role === "LIBERAL"
+            {role === "liberal"
               ? ROLE_MODAL_LIBERAL_P3
-              : role === "FASCIST"
-              ? ROLE_MODAL_FASCIST_P3
-              : ROLE_MODAL_HITLER_P3}
+              : role === "fascist"
+                ? ROLE_MODAL_FASCIST_P3
+                : ROLE_MODAL_HITLER_P3}
           </p>
         </div>
       </div>

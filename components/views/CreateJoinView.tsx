@@ -24,7 +24,7 @@ export default function CreateJoinView() {
     setMaxPlayers,
     handleGameSubmit,
     setPlayerOrder,
-    // setPlayAgainst,
+    setPlayAgainst,
     setView,
   } = useGameStore();
 

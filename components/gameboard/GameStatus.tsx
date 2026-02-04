@@ -28,19 +28,19 @@ const GameStatus: React.FC = () => {
     return players.reduce(
       (acc, player) => {
         switch (player.role) {
-          case "LIBERAL":
+          case "liberal":
             acc.liberal++;
             break;
-          case "FASCIST":
+          case "fascist":
             acc.fascist++;
             break;
-          case "HITLER":
+          case "hitler":
             acc.hitler++;
             break;
         }
         return acc;
       },
-      { liberal: 0, fascist: 0, hitler: 0 }
+      { liberal: 0, fascist: 0, hitler: 0 },
     );
   }
 

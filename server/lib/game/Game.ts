@@ -16,6 +16,9 @@ import type {
   PlayAgainst,
   Role,
 } from "../../lib/game/GameTypes.js";
+import { SilentFascist } from "../bots/behaviors/fascist/SilentFascist.js";
+import { CautiousLiberal } from "../bots/behaviors/liberal/CautiousLiberal.js";
+import { BotController } from "../bots/BotController.js";
 
 /* ---------- Game class ---------- */
 
@@ -125,7 +128,48 @@ export class Game {
     this.started = true;
 
     this.assignRoles(playersOrder);
+    if (this.playAgainst === "bots") {
+      this.assignBotControllers();
+    }
+
     this.resetFullDeckAndShuffle();
+  }
+
+  private assignBotControllers(): void {
+    const playerIds = this.players
+      .map((p) => p.id)
+      .filter((id): id is string => id !== null);
+
+    for (const player of this.players) {
+      if (!player.isBot) continue;
+
+      const knownPlayers = this.getKnownPlayersForBot(player);
+
+      const behavior =
+        player.role === "liberal" ? new CautiousLiberal() : new SilentFascist(); // HITLER treated as fascist for now
+
+      player.bot = new BotController({
+        playerId: player.id!,
+        role: player.role!,
+        behavior,
+        playerIds,
+        knownPlayers,
+      });
+    }
+  }
+
+  private getKnownPlayersForBot(player: Player): string[] {
+    if (player.role === "liberal") return [];
+    if (this.players.length <= 6 && player.role === "hitler") return [];
+
+    return this.players
+      .filter(
+        (p) =>
+          p.id !== null &&
+          p.id !== player.id &&
+          (p.role === "fascist" || p.role === "hitler"),
+      )
+      .map((p) => p.id!);
   }
 
   /* ---------------- Deck management ---------------- */
@@ -133,8 +177,8 @@ export class Game {
   /** Create standard 17-card deck (11 fascist, 6 liberal) and shuffle */
   resetFullDeckAndShuffle() {
     this.drawPile = [
-      ...Array<Policy>(11).fill("FASCIST"),
-      ...Array<Policy>(6).fill("LIBERAL"),
+      ...Array<Policy>(11).fill("fascist"),
+      ...Array<Policy>(6).fill("liberal"),
     ];
     this.shuffleInPlace(this.drawPile);
     this.discardPile = [];
@@ -223,8 +267,10 @@ export class Game {
 
     // Determine number of fascists (including Hitler)
     let totalFascists = 0;
-    if (total <= 6) totalFascists = 2; // 5–6 players: 1 fascist + Hitler
-    else if (total <= 8) totalFascists = 3; // 7–8 players: 2 fascists + Hitler
+    if (total <= 6)
+      totalFascists = 2; // 5–6 players: 1 fascist + Hitler
+    else if (total <= 8)
+      totalFascists = 3; // 7–8 players: 2 fascists + Hitler
     else totalFascists = 4; // 9–10 players: 3 fascists + Hitler
 
     // Create an array of roles
@@ -234,16 +280,16 @@ export class Game {
     }[] = [];
 
     // Add Hitler
-    roles.push({ role: "HITLER", party: "FASCIST" });
+    roles.push({ role: "hitler", party: "fascist" });
 
     // Add remaining fascists
     for (let i = 1; i < totalFascists; i++) {
-      roles.push({ role: "FASCIST", party: "FASCIST" });
+      roles.push({ role: "fascist", party: "fascist" });
     }
 
     // Add liberals
     while (roles.length < total) {
-      roles.push({ role: "LIBERAL", party: "LIBERAL" });
+      roles.push({ role: "liberal", party: "liberal" });
     }
 
     // Shuffle roles
@@ -369,7 +415,7 @@ export class Game {
   setPresidentDiscard(discard: number) {
     const discardedPolicy = this.presidentHand[Number(discard)];
     const remainingCards = this.presidentHand.filter(
-      (_, i) => i !== Number(discard)
+      (_, i) => i !== Number(discard),
     );
     this.setChancellorHand(remainingCards);
     this.setPresidentHand([]);
@@ -382,7 +428,7 @@ export class Game {
 
   enactPolicy(policy: Policy) {
     this.enactedPolicies = [...this.enactedPolicies, policy];
-    if (policy === "LIBERAL") {
+    if (policy === "liberal") {
       this.liberalPolicies++;
     } else {
       this.fascistPolicies++;
@@ -397,14 +443,14 @@ export class Game {
     this.setStatusBannerAll(
       `Policy enacted: ${
         policyName.charAt(0).toUpperCase() + policyName.slice(1)
-      }`
+      }`,
     );
   }
 
   setChancellorEnact(policyIndex: number) {
     const policy: Policy = this.chancellorHand[policyIndex];
     const discardedPolicy = this.chancellorHand.find(
-      (_, index) => index !== policyIndex
+      (_, index) => index !== policyIndex,
     );
     this.setChancellorHand([]);
 
@@ -434,7 +480,7 @@ export class Game {
 
   setLastGovernment(
     presidentId: number | null,
-    chancellorId: number | null
+    chancellorId: number | null,
   ): void {
     this.lastGovernment = { presidentId, chancellorId };
   }
@@ -448,7 +494,7 @@ export class Game {
       if (!this.failedToElectGovernment || this.chancellorProposedVeto) {
         this.setLastGovernment(
           this.currentPresidentIndex,
-          this.currentChancellorIndex
+          this.currentChancellorIndex,
         );
       }
     } else {
@@ -494,7 +540,7 @@ export class Game {
       this.setStatusBanner(
         playerIndex,
         "Waiting for other players to start the game...",
-        true
+        true,
       );
     }
 
@@ -515,13 +561,13 @@ export class Game {
     const alivePlayers = this.players.filter((p) => p.alive);
     const allVoted = alivePlayers.every((p) => p.vote !== null);
     if (allVoted) {
-      const yesVotes = this.players.filter((p) => p.vote === "JA").length;
-      const noVotes = this.players.filter((p) => p.vote === "NEIN").length;
+      const yesVotes = this.players.filter((p) => p.vote === "yes").length;
+      const noVotes = this.players.filter((p) => p.vote === "no").length;
       this.showVotes = true;
       this.setStatusBannerAll(
         `${yesVotes} - ${noVotes}: Vote ${
           yesVotes > noVotes ? "passed" : "failed"
-        }`
+        }`,
       );
 
       if (yesVotes > noVotes) {
@@ -542,7 +588,7 @@ export class Game {
     this.setModal(chancellorIndex!, "chancellor_hand");
     this.setStatusBannerAll(
       "Waiting for Chancellor to enact a policy...",
-      true
+      true,
     );
   }
 
@@ -556,7 +602,7 @@ export class Game {
     this.setStatusBannerAll(
       `Policy enacted: ${
         policyName.charAt(0).toUpperCase() + policyName.slice(1)
-      }`
+      }`,
     );
   }
 
@@ -567,7 +613,7 @@ export class Game {
     if (
       presidentialAction &&
       presidentialAction?.power !== null &&
-      this.enactedPolicies[this.enactedPolicies.length - 1] === "FASCIST"
+      this.enactedPolicies[this.enactedPolicies.length - 1] === "fascist"
     ) {
       this.setPhase(playerIndex, "presidential_power");
       if (this.currentPresidentIndex === playerIndex) {
@@ -580,7 +626,7 @@ export class Game {
         this.setStatusBanner(
           playerIndex,
           "Waiting for President to make use of his Presidential power...",
-          true
+          true,
         );
       }
     } else {
@@ -591,7 +637,7 @@ export class Game {
         this.setStatusBanner(
           playerIndex,
           "Waiting for President to end his term...",
-          true
+          true,
         );
       }
     }
@@ -608,7 +654,7 @@ export class Game {
         this.setStatusBanner(
           playerIndex,
           "Waiting for President to draw a card from the top of the deck and play it...",
-          true
+          true,
         );
         this.setModal(playerIndex, null);
       }
@@ -622,7 +668,7 @@ export class Game {
         this.setStatusBanner(
           playerIndex,
           "Waiting for President to end his term...",
-          true
+          true,
         );
       }
     }
@@ -650,7 +696,7 @@ export class Game {
       this.setStatusBanner(
         playerIndex,
         "Waiting for President to end his term...",
-        true
+        true,
       );
     }
     this.setModal(playerIndex, null);
@@ -682,7 +728,7 @@ export class Game {
         this.setStatusBanner(
           playerIndex,
           "Waiting for President to end his term...",
-          true
+          true,
         );
       }
     }
@@ -697,7 +743,7 @@ export class Game {
       this.setStatusBanner(
         playerIndex,
         "Waiting for President to end his term...",
-        true
+        true,
       );
     }
   }
@@ -714,7 +760,7 @@ export class Game {
       this.setStatusBanner(
         playerIndex,
         "Waiting for President to select a policy to discard...",
-        true
+        true,
       );
     }
 
@@ -728,7 +774,7 @@ export class Game {
     this.setModal(presidentIndex!, "vetoProposed");
     this.setStatusBannerAll(
       "Chancellor proposed a veto! Waiting for President to take action...",
-      true
+      true,
     );
   }
 
@@ -760,22 +806,22 @@ export class Game {
   checkWin(justPassedPolicy = false): boolean {
     if (this.liberalPolicies >= 5) {
       this.setModalAll("gameOver");
-      this.gameWon = "LIBERAL";
+      this.gameWon = "liberal";
       this.winReason = "policy";
       return true;
     }
 
     if (this.fascistPolicies >= 6) {
       this.setModalAll("gameOver");
-      this.gameWon = "FASCIST";
+      this.gameWon = "fascist";
       this.winReason = "policy";
       return true;
     }
 
-    const hitler = this.players.find((p) => p.role === "HITLER");
+    const hitler = this.players.find((p) => p.role === "hitler");
     if (hitler && !hitler.alive) {
       this.setModalAll("gameOver");
-      this.gameWon = "LIBERAL";
+      this.gameWon = "liberal";
       this.winReason = "hitlerExecuted";
       return true;
     }
@@ -784,10 +830,10 @@ export class Game {
     if (!justPassedPolicy) {
       if (
         this.fascistPolicies >= 3 &&
-        this.players[this.currentChancellorIndex!].role === "HITLER"
+        this.players[this.currentChancellorIndex!].role === "hitler"
       ) {
         this.setModalAll("gameOver");
-        this.gameWon = "FASCIST";
+        this.gameWon = "fascist";
         this.winReason = "hitlerElected";
         return true;
       }

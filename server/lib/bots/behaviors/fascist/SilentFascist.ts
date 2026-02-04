@@ -33,7 +33,7 @@ export class SilentFascist implements BotBehavior {
 
   private voteGovernment(
     context: Extract<BotActionContext, { type: "VOTE_GOVERNMENT" }>,
-    memory: BotMemory
+    memory: BotMemory,
   ): BotDecision {
     const { presidentId, chancellorId } = context;
 
@@ -41,7 +41,7 @@ export class SilentFascist implements BotBehavior {
     const chancellor = memory.players.get(chancellorId);
 
     if (!president || !chancellor) {
-      return { type: "VOTE", vote: "NEIN" };
+      return { type: "VOTE", vote: "no" };
     }
 
     // Prefer governments with low suspicion fascists / Hitler
@@ -50,7 +50,7 @@ export class SilentFascist implements BotBehavior {
       chancellor.suspicion +
       memory.gameState.fascistPolicies * 5;
 
-    return { type: "VOTE", vote: score > 0 ? "JA" : "NEIN" };
+    return { type: "VOTE", vote: score > 0 ? "yes" : "no" };
   }
 
   // ------------------------
@@ -59,11 +59,12 @@ export class SilentFascist implements BotBehavior {
 
   private nominateChancellor(
     context: Extract<BotActionContext, { type: "NOMINATE_CHANCELLOR" }>,
-    memory: BotMemory
+    memory: BotMemory,
   ): BotDecision {
     let bestCandidate = context.eligiblePlayers[0];
     let bestScore = -Infinity;
-
+    console.log("MEMORY", memory);
+    console.log("BEST CANDIDATE BEFORE", bestCandidate);
     for (const id of context.eligiblePlayers) {
       const p = memory.players.get(id);
       if (!p) continue;
@@ -73,13 +74,14 @@ export class SilentFascist implements BotBehavior {
 
       // Late game aggression
       score += memory.gameState.fascistPolicies * 3;
-
+      console.log("SCORE", score);
       if (score > bestScore) {
         bestScore = score;
         bestCandidate = id;
       }
     }
 
+    console.log("BEST CANDIDATE AFTER", bestCandidate);
     return { type: "NOMINATE", playerId: bestCandidate };
   }
 
@@ -88,12 +90,12 @@ export class SilentFascist implements BotBehavior {
   // ------------------------
 
   private discardPolicy(
-    context: Extract<BotActionContext, { type: "DISCARD_POLICY" }>
+    context: Extract<BotActionContext, { type: "DISCARD_POLICY" }>,
   ): BotDecision {
     // Fascist always keeps fascist policy if possible
-    const liberalIndex = context.policies.indexOf("LIBERAL");
+    const liberalIndex = context.policies.indexOf("liberal");
     if (liberalIndex >= 0) {
-      return { type: "DISCARD", policy: "LIBERAL" };
+      return { type: "DISCARD", policy: "liberal" };
     }
 
     return { type: "DISCARD", policy: context.policies[0] };
@@ -105,7 +107,7 @@ export class SilentFascist implements BotBehavior {
 
   private executePlayer(
     context: Extract<BotActionContext, { type: "EXECUTE_PLAYER" }>,
-    memory: BotMemory
+    memory: BotMemory,
   ): BotDecision {
     // Kill highest suspicion non-fascist-looking player
     let target = context.eligiblePlayers[0];
@@ -129,7 +131,7 @@ export class SilentFascist implements BotBehavior {
   // ------------------------
 
   private claimPolicies(
-    context: Extract<BotActionContext, { type: "CLAIM_POLICIES" }>
+    context: Extract<BotActionContext, { type: "CLAIM_POLICIES" }>,
   ): BotDecision {
     const lieChance = 0.4;
 
@@ -155,8 +157,8 @@ export class SilentFascist implements BotBehavior {
 
   private fakePolicyDraw(actual: string[]) {
     // Minimal plausible lie
-    if (actual.includes("FASCIST")) {
-      return ["LIBERAL", "LIBERAL", "FASCIST"];
+    if (actual.includes("fascist")) {
+      return ["liberal", "liberal", "fascist"];
     }
     return actual;
   }

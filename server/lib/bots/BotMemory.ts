@@ -1,15 +1,23 @@
 import { PlayerId, PlayerPerception, BotGameState } from "./BotMemoryTypes.js";
 import { GameEvent } from "../game/GameEvents.js";
-import { Policy, Vote } from "../game/GameTypes.js";
+import { Policy, Role, Vote } from "../game/GameTypes.js";
 
 export class BotMemory {
+  readonly selfId: PlayerId;
   readonly players: Map<PlayerId, PlayerPerception>;
   readonly gameState: BotGameState;
 
-  constructor(playerIds: PlayerId[], knownPlayers: PlayerId[]) {
+  constructor(
+    selfId: PlayerId,
+    playerIds: PlayerId[],
+    knownPlayers: PlayerId[],
+  ) {
+    this.selfId = selfId;
     this.players = new Map();
 
     for (const id of playerIds) {
+      if (id === selfId) continue; // 👈 critical invariant
+
       this.players.set(id, {
         suspicion: knownPlayers.includes(id) ? -50 : 0,
         trust: knownPlayers.includes(id) ? 80 : 50,
@@ -74,7 +82,7 @@ export class BotMemory {
     });
 
     // Example heuristic
-    if (event.vote === "JA") {
+    if (event.vote === "yes") {
       perception.suspicion += 2;
     }
   }
@@ -84,7 +92,7 @@ export class BotMemory {
     presidentId: PlayerId;
     chancellorId: PlayerId;
   }) {
-    if (event.policy === "LIBERAL") {
+    if (event.policy === "liberal") {
       this.gameState.liberalPolicies++;
       this.adjustSuspicion(event.presidentId, -10);
       this.adjustSuspicion(event.chancellorId, -10);
@@ -135,7 +143,7 @@ export class BotMemory {
   private onPlayerExecuted(event: {
     executorId: PlayerId;
     targetId: PlayerId;
-    revealedRole: "LIBERAL" | "FASCIST" | "HITLER";
+    revealedRole: Role;
   }) {
     const { executorId, targetId, revealedRole } = event;
 
@@ -145,18 +153,18 @@ export class BotMemory {
     target.alive = false;
 
     // Everyone now knows the truth about the target
-    if (revealedRole === "LIBERAL") {
+    if (revealedRole === "liberal") {
       this.players.forEach((p) => {
         if (p.alive) p.trust -= 5;
       });
       this.adjustSuspicion(executorId, +30);
     }
 
-    if (revealedRole === "FASCIST") {
+    if (revealedRole === "fascist") {
       this.adjustSuspicion(executorId, -40);
     }
 
-    if (revealedRole === "HITLER") {
+    if (revealedRole === "hitler") {
       // Game ends, but still record it
       this.adjustSuspicion(executorId, -100);
     }

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useGameStore } from "../../store/game";
 import { useState } from "react";
 import { Player, Vote } from "@/server/lib/game/GameTypes";
+import { capitalizeFirstLetter } from "@/server/helpers";
 
 interface PlayerContainerProps {
   player?: Player; // after initialized
@@ -82,11 +83,11 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
     if (me) {
       if (me.id === player.id) {
         canSeeRole = true;
-      } else if (me.role === "FASCIST") {
-        canSeeRole = player.role === "FASCIST" || player.role === "HITLER";
-      } else if (me.role === "HITLER") {
+      } else if (me.role === "fascist") {
+        canSeeRole = player.role === "fascist" || player.role === "hitler";
+      } else if (me.role === "hitler") {
         if (maxPlayers <= 6) {
-          canSeeRole = player.role === "FASCIST";
+          canSeeRole = player.role === "fascist";
         }
       }
     }
@@ -162,7 +163,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
                     gameInstance?.lastGovernment.presidentId))) ||
             (showInvestigated && player.investigated)
             ? "opacity-30"
-            : ""
+            : "",
         )}
       >
         <p className="m-0 text-center absolute bottom-[97%] left-[50%] -translate-x-1/2 text-[3.2cqw] md:text-[1cqw]">
@@ -174,9 +175,9 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
             "President"}
         </p>
         <AnimatePresence>
-          {vote === "JA" && showVotes && (
+          {vote === "yes" && showVotes && (
             <motion.div
-              key={`JA-${index}`}
+              key={`yes-${index}`}
               custom={index}
               variants={voteVariants}
               initial="hidden"
@@ -193,9 +194,9 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
             </motion.div>
           )}
 
-          {vote === "NEIN" && showVotes && (
+          {vote === "no" && showVotes && (
             <motion.div
-              key={`NEIN-${index}`}
+              key={`no-${index}`}
               custom={index}
               variants={voteVariants}
               initial="hidden"
@@ -250,11 +251,11 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
             />
             <p
               className={clsx("capitalize text-[3cqw] md:text-[1cqw]", {
-                liberal: player.role === "LIBERAL",
-                fascist: player.role === "FASCIST" || player.role === "HITLER",
+                liberal: player.role === "liberal",
+                fascist: player.role === "fascist" || player.role === "hitler",
               })}
             >
-              {player.role}
+              {capitalizeFirstLetter(player.role)}
             </p>
           </div>
         )}

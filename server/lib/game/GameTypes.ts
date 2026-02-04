@@ -1,9 +1,9 @@
 import { BotController } from "../bots/BotController.js";
 import { Game } from "./Game.js";
 
-export type Role = "LIBERAL" | "FASCIST" | "HITLER";
-export type Vote = "JA" | "NEIN" | null;
-export type Policy = "LIBERAL" | "FASCIST";
+export type Role = "liberal" | "fascist" | "hitler";
+export type Vote = "yes" | "no" | null;
+export type Policy = "liberal" | "fascist";
 
 export type Modal =
   | "role"

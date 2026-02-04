@@ -40,21 +40,16 @@ const PhaseBanner: React.FC = () => {
             playerId,
             modal: "nominate_chancellor",
           });
-        } else if (me?.phase === "nomination" && playAgainst === "bots") {
-          if (gameInstance?.currentPresidentIndex !== me?.index) {
-            const currentPresident = players.find(
-              (player) => player.index === gameInstance.currentPresidentIndex
-            );
+        } else if (
+          me?.phase === "nomination" &&
+          playAgainst === "bots" &&
+          gameInstance?.currentPresidentIndex !== me?.index
+        ) {
+          if (
+            gameInstance?.players[gameInstance.currentPresidentIndex!].isBot
+          ) {
             socket.emit("handleNominateChancellorModalClose", {
               roomId: gameInstance.id,
-              bot: currentPresident,
-            });
-          } else {
-            socket.emit("setModal", {
-              roomId: gameInstance?.id,
-              playerIndex,
-              playerId,
-              modal: "nominate_chancellor",
             });
           }
         } else if (me?.phase === "nomination") {

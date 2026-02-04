@@ -6,13 +6,13 @@ import { Role } from "../../game/GameTypes.js";
 export class BotBehaviorFactory {
   static create(role: Role, playerCount: number): BotBehavior {
     switch (role) {
-      case "LIBERAL":
+      case "liberal":
         return new CautiousLiberal();
 
-      case "FASCIST":
+      case "fascist":
         return new SilentFascist();
 
-      case "HITLER":
+      case "hitler":
         return new SilentFascist(); // later: Hitler-specific behavior
     }
   }

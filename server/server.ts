@@ -12,6 +12,7 @@ import { RoomManager } from "./lib/room/RoomManager.js";
 import { Room } from "./lib/room/Room.js";
 import { Game } from "./lib/game/Game.js";
 import { LobbyPlayer } from "./lib/game/GameTypes.js";
+import { getEligiblePlayers } from "./helpers/index.js";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -87,7 +88,7 @@ io.on("connection", (socket: Socket) => {
     "create_game",
     (
       { name, maxPlayers, portrait, playAgainst, playerOrder, roomId },
-      callback
+      callback,
     ) => {
       if (roomManager.exists(roomId)) {
         return callback({ error: "Game name already exists." });
@@ -124,7 +125,7 @@ io.on("connection", (socket: Socket) => {
             portrait: "/images/player-portraits/player-portrait-0.svg",
             connected: true,
             isBot: true,
-          })
+          }),
         );
         game.addPlayers(botPlayers);
       }
@@ -139,7 +140,7 @@ io.on("connection", (socket: Socket) => {
       }
 
       emitLobbyUpdate(room);
-    }
+    },
   );
 
   /* -----------------------------
@@ -153,7 +154,7 @@ io.on("connection", (socket: Socket) => {
         roomId,
         portrait,
       }: { name: string; roomId: string; portrait: string },
-      callback
+      callback,
     ) => {
       const room = roomManager.get(roomId);
       if (!room) return callback({ error: "Room not found." });
@@ -170,7 +171,7 @@ io.on("connection", (socket: Socket) => {
       if (
         room.game.players.some(
           (p) =>
-            p.portrait === portrait && !portrait.includes("player-portrait-0")
+            p.portrait === portrait && !portrait.includes("player-portrait-0"),
         )
       ) {
         return callback({ error: "Portrait exists in the room already." });
@@ -205,7 +206,7 @@ io.on("connection", (socket: Socket) => {
       if (room.isFull) {
         startGameInRoom(room);
       }
-    }
+    },
   );
 
   /* -----------------------------
@@ -287,7 +288,7 @@ io.on("connection", (socket: Socket) => {
         game: room.game,
         maxPlayers: room.maxPlayers,
       });
-    }
+    },
   );
 
   /* ----------------------------------------------------
@@ -345,31 +346,51 @@ io.on("connection", (socket: Socket) => {
       room.game.setStatusBannerAll(statusBanner.text, statusBanner.loading);
 
       io.in(single ? playerId : roomId).emit("game_update", room.game);
-    }
+    },
   );
 
   // SELECT CHANCELLOR
   socket.on(
     "handleNominateChancellorModalClose",
-    ({ roomId, chancellorId, bot }) => {
+    ({ roomId, chancellorId }) => {
       const room = roomManager.get(roomId);
       if (!room || !room.game) return;
 
-      if (bot) {
-        //
-      } else {
-        // Ensure this player is the current president
-        const president = room.game.players[room.game.currentPresidentIndex!];
-        if (president.id !== socket.id) {
-          console.warn("Non-president tried to select chancellor:", socket.id);
-          return;
+      const presidentIndex = room.game.currentPresidentIndex;
+
+      if (presidentIndex !== null) {
+        const president = room.game.players[presidentIndex];
+
+        if (president.isBot) {
+          const bot = president.bot!;
+          const eligiblePlayers = getEligiblePlayers(room.game);
+
+          const decision = bot.decide({
+            type: "NOMINATE_CHANCELLOR",
+            eligiblePlayers,
+          });
+
+          if (decision.type !== "NOMINATE") return;
+
+          chancellorId = room.game.players.find(
+            (p) => p.id === decision.playerId,
+          )?.index;
+        } else {
+          // Ensure this player is the current president
+          if (president.id !== socket.id) {
+            console.warn(
+              "Non-president tried to select chancellor:",
+              socket.id,
+            );
+            return;
+          }
         }
+
+        room.game.handleNominateChancellorModalClose(chancellorId);
+
+        io.in(roomId).emit("game_update", room.game);
       }
-
-      room.game.handleNominateChancellorModalClose(chancellorId);
-
-      io.in(roomId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on(
@@ -381,7 +402,7 @@ io.on("connection", (socket: Socket) => {
       const allVoted = room.game.handleVoteModalClose(playerIndex, vote);
 
       io.in(allVoted ? roomId : playerId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on("handleShowPresidentHand", ({ roomId, playerIndex }) => {
@@ -402,7 +423,7 @@ io.on("connection", (socket: Socket) => {
       room.game.handlePresidentHandModalClose(playerIndex, discard);
 
       io.in(roomId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on("handleChancellorHandModalClose", ({ roomId, enact }) => {
@@ -423,7 +444,7 @@ io.on("connection", (socket: Socket) => {
       const updateRoom = room.game.handleElectionTrackerModalClose(playerIndex);
 
       io.in(updateRoom ? roomId : playerId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on(
@@ -435,7 +456,7 @@ io.on("connection", (socket: Socket) => {
       room.game.handlePolicyEnactedModalClose(playerIndex);
 
       io.in(playerId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on("handlePeekModalClose", ({ roomId, playerIndex }) => {
@@ -474,7 +495,7 @@ io.on("connection", (socket: Socket) => {
       room.game.handleSpecialElectionModalClose(newPresidentIndex);
 
       io.in(roomId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on("handleExecutionModalClose", ({ roomId, playerIndex }) => {
@@ -522,7 +543,7 @@ io.on("connection", (socket: Socket) => {
       room.game.handleProposeVetoModalClose(playerIndex, oblige);
 
       io.in(roomId).emit("game_update", room.game);
-    }
+    },
   );
 
   socket.on("gameEnded", ({ roomId, playerId, action }) => {
@@ -572,10 +593,10 @@ io.on("connection", (socket: Socket) => {
       room.game.handleShowAffiliationModal(playerIndex, show);
 
       io.in(playerId).emit("game_update", room.game);
-    }
+    },
   );
 });
 
 httpServer.listen(PORT, "0.0.0.0", () =>
-  console.log(`Socket.io server running on port ${PORT}`)
+  console.log(`Socket.io server running on port ${PORT}`),
 );

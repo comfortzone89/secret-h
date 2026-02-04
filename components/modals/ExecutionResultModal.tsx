@@ -36,7 +36,7 @@ const ExecutionResultModal: React.FC = () => {
             <PlayerContainer player={executedPlayer} />
           </div>
           <p className="text-center mb-4">
-            The player {executedPlayer?.role === "HITLER" ? "WAS" : "WASN'T"}{" "}
+            The player {executedPlayer?.role === "hitler" ? "WAS" : "WASN'T"}{" "}
             Hitler!
           </p>
         </>
@@ -69,7 +69,7 @@ const ExecutionResultModal: React.FC = () => {
 
             <p className="text-center mb-4">
               <span className="text-amber-600">{executedPlayerName}</span>{" "}
-              {executedPlayer?.role === "HITLER" ? "WAS" : "WASN'T"} Hitler!
+              {executedPlayer?.role === "hitler" ? "WAS" : "WASN'T"} Hitler!
             </p>
           </>
         )}
